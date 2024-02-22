@@ -21,6 +21,14 @@ namespace UnityEngine
         [ReadOnly]
         private Dictionary<string, List<DataBinderBehaviour>> binders = new();
 
+        private void Awake()
+        {
+            if (this.DataContext is not null)
+            {
+                this.Initialize(this.DataContext);
+            }
+        }
+
         public void AddDataBinderBehaviour(string path, DataBinderBehaviour behaviour)
         {
             if (!this.binders.ContainsKey(path))
