@@ -1,0 +1,17 @@
+{
+    "name": "Unity.DataBinding.Runtime.Test",
+    "rootNamespace": "UnityEngine",
+    "references": [
+        "Unity.TextMeshPro",
+        "Unity.DataBinding.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

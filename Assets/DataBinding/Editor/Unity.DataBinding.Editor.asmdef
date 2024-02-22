@@ -1,0 +1,19 @@
+{
+    "name": "Unity.DataBinding.Editor",
+    "rootNamespace": "UnityEngine",
+    "references": [
+        "Unity.TextMeshPro",
+        "Unity.DataBinding.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
