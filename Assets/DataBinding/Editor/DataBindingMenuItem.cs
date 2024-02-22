@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace UnityEditor
 {
+    [InitializeOnLoad]
     public static class DataBindingMenuItem
     {
         [MenuItem("GameObject/DataBinding/DataSource", false, -1)]
@@ -24,6 +25,15 @@ namespace UnityEditor
             }
 
             Selection.activeGameObject.AddComponent<TextTMPBinder>();
+        }
+
+        static DataBindingMenuItem()
+        {
+            DataContextOptions.Default.DataContextTypes.Clear();
+            DataContextOptions.Default.DataContextTypes.AddRange(TypeCache.GetTypesDerivedFrom<DataContext>());
+            
+            DataContext.Build();
+            DataContextCache.Cache();
         }
     }
 }

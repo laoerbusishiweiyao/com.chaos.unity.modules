@@ -21,6 +21,13 @@ namespace UnityEngine
             Accessors = new();
 
         /// <summary>
+        /// 修改器 - 数据上下文类型 属性值类型 属性路径 属性修改器
+        /// </summary>
+        public static readonly Dictionary<string, Dictionary<string, Dictionary<string, Action<DataContext, object>>>>
+            Mutators = new();
+
+
+        /// <summary>
         /// 基础数据路径 - 用于拼接属性路径
         /// </summary>
         [SerializeField] [ReadOnly] private string baseDataContextPath;
@@ -28,7 +35,7 @@ namespace UnityEngine
         /// <summary>
         /// 数据上下文类型全称 - 用于添加访问器
         /// </summary>
-        private readonly string contextTypeFullName;
+        private string contextTypeFullName;
 
         /// <summary>
         /// 数据上下文改变事件处理器
@@ -45,6 +52,16 @@ namespace UnityEngine
             this.contextTypeFullName = this.GetType().FullName;
 
             BuildAllTypeAccessor();
+            BuildAllTypeMutator();
+        }
+
+        public static void Build()
+        {
+            Accessors.Clear();
+            Mutators.Clear();
+
+            BuildAllTypeAccessor();
+            BuildAllTypeMutator();
         }
 
         /// <summary>
@@ -52,14 +69,10 @@ namespace UnityEngine
         /// </summary>
         private static void BuildAllTypeAccessor()
         {
-#if UNITY_EDITOR
-            Accessors.Clear();
-#else
             if (Accessors.Count != 0)
             {
                 return;
             }
-#endif
 
             foreach (Type type in DataContextOptions.Default.DataContextTypes)
             {
@@ -80,6 +93,42 @@ namespace UnityEngine
                                 parameter);
                         var accessor = lambda.Compile();
                         accessors.Add(path, accessor);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 动态构建所有数据上下文的修改器
+        /// </summary>
+        private static void BuildAllTypeMutator()
+        {
+            if (Mutators.Count != 0)
+            {
+                return;
+            }
+
+            foreach (Type type in DataContextOptions.Default.DataContextTypes)
+            {
+                Dictionary<string, Dictionary<string, Action<DataContext, object>>> valueMutators = new();
+                Mutators.Add(type.FullName, valueMutators);
+                foreach ((Type key, List<string> paths) in BuildAllTypeAccessor(type))
+                {
+                    Dictionary<string, Action<DataContext, object>> mutators = new();
+                    valueMutators.Add(key.FullName, mutators);
+
+                    foreach (string path in paths)
+                    {
+                        var parameter = Expression.Parameter(typeof(DataContext));
+                        var value = Expression.Parameter(typeof(object));
+                        var body = path.Split('.').Aggregate<string, Expression>(Expression.Convert(parameter, type),
+                            Expression.Property);
+                        var lambda =
+                            Expression.Lambda<Action<DataContext, object>>(
+                                Expression.Assign(body, Expression.Convert(value, body.Type)),
+                                parameter, value);
+                        var mutator = lambda.Compile();
+                        mutators.Add(path, mutator);
                     }
                 }
             }
@@ -161,7 +210,7 @@ namespace UnityEngine
         }
 
         /// <summary>
-        /// 获取指定属性路径对应的类型
+        /// 获取指定属性路径对应的值
         /// </summary>
         /// <param name="path">属性路径</param>
         /// <typeparam name="T">属性类型</typeparam>
@@ -170,6 +219,12 @@ namespace UnityEngine
         {
             if (this.contextTypeFullName is null)
             {
+                this.contextTypeFullName = this.GetType().FullName;
+            }
+
+            if (this.contextTypeFullName is null)
+            {
+                Debug.LogError("数据上下文类型为空");
                 return default;
             }
 
@@ -193,6 +248,48 @@ namespace UnityEngine
             }
 
             return (T)Accessors[this.contextTypeFullName][valueTypeFullName][path](this);
+        }
+
+        /// <summary>
+        /// 设置指定属性路径对应的值
+        /// </summary>
+        /// <param name="path">属性路径</param>
+        /// <typeparam name="T">属性类型</typeparam>
+        /// <returns></returns>
+        public void SetValue<T>(string path, T value)
+        {
+            if (this.contextTypeFullName is null)
+            {
+                this.contextTypeFullName = this.GetType().FullName;
+            }
+
+            if (this.contextTypeFullName is null)
+            {
+                Debug.LogError("数据上下文类型为空");
+                return;
+            }
+
+            if (!Mutators.ContainsKey(this.contextTypeFullName))
+            {
+                Debug.LogError($"类型 {this.contextTypeFullName} 不存在修改器");
+                return;
+            }
+
+            string valueTypeFullName = typeof(T).FullName;
+            if (!Mutators[this.contextTypeFullName].ContainsKey(valueTypeFullName))
+            {
+                Debug.LogError($"类型 {this.contextTypeFullName} {valueTypeFullName} 不存在指定值类型修改器");
+                return;
+            }
+
+            if (!Mutators[this.contextTypeFullName][valueTypeFullName].ContainsKey(path))
+            {
+                Debug.LogError($"类型 {this.contextTypeFullName} {valueTypeFullName} 不存在指定路径 {path} 修改器");
+                return;
+            }
+
+            Mutators[this.contextTypeFullName][valueTypeFullName][path](this, value);
+            this.dataContextChanged?.Invoke(this, new DataContextChangedEventArgs(path));
         }
 
         /// <summary>

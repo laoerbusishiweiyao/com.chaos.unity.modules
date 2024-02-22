@@ -5,18 +5,13 @@ using TMPro;
 namespace UnityEngine
 {
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(TextMeshProUGUI))]
+    [RequireComponent(typeof(TMP_InputField))]
     [AddComponentMenu("DataBinding/TextTMPBinder")]
-    public sealed class TextTMPBinder : DataBinderBehaviour
+    public sealed class TextTMPInputBinder : DataBinderBehaviour
     {
-        [PropertySpace] [Delayed] [TextArea(2, 10)] [LabelText("字符串填充形式")]
-        public string Format;
-
         [Delayed] [LabelText("数字精度")] public string Precision;
 
-        [LabelText("目标")] [ReadOnly] public TextMeshProUGUI Target;
-
-        private object[] parameters;
+        [LabelText("目标")] [ReadOnly] public TMP_InputField Target;
 
         public override void Refresh()
         {
@@ -32,28 +27,7 @@ namespace UnityEngine
                 return;
             }
 
-            if (string.IsNullOrEmpty(this.Format))
-            {
-                this.Target.text = this.GetValue(this.FirstDataBinder());
-            }
-            else
-            {
-                parameters = new object[this.binders.Count];
-                int index = 0;
-                foreach (DataBinder binder in this.binders.Values)
-                {
-                    parameters[index++] = this.GetValue(binder);
-                }
-
-                try
-                {
-                    this.Target.text = string.Format(this.Format, parameters);
-                }
-                catch (Exception exception)
-                {
-                    Debug.LogError($"{this.name}字符串拼接 Format {this.Format} 出错请检查, {exception.Message}");
-                }
-            }
+            this.Target.text = this.GetValue(this.FirstDataBinder());
         }
 
         private string GetValue(DataBinder binder)
@@ -79,7 +53,36 @@ namespace UnityEngine
         public override void Initialize()
         {
             base.Initialize();
-            this.Target ??= this.GetComponent<TextMeshProUGUI>();
+            this.Target ??= this.GetComponent<TMP_InputField>();
+
+            this.Target.onEndEdit.RemoveListener(UpdateSource);
+            this.Target.onEndEdit.AddListener(UpdateSource);
+        }
+
+        private void UpdateSource(string value)
+        {
+            if (this.dataSource is null || this.dataSource.DataContext is null)
+            {
+                return;
+            }
+
+            if (this.binders.Count == 0)
+            {
+                return;
+            }
+
+            this.dataSource.DataContext.SetValue(this.FirstDataBinder().Source, value);
+        }
+
+        [OnInspectorGUI]
+        private void OnInspectorGUI()
+        {
+            if (this.Target is null)
+            {
+                return;
+            }
+
+            this.UpdateSource(this.Target.text);
         }
     }
 }

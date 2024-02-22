@@ -20,23 +20,7 @@ namespace UnityEngine
         /// <summary>
         /// 数据上下文类型集合
         /// </summary>
-        public List<Type> DataContextTypes
-        {
-            get
-            {
-#if UNITY_EDITOR
-                this.dataContextTypes.Clear();
-                this.dataContextTypes.AddRange(UnityEditor.TypeCache.GetTypesDerivedFrom<DataContext>());
-#else
-                if (this.dataContextTypes.Count == 0)
-                {
-                    Debug.LogError("数据上下文类型集合为空");
-                }
-#endif
-
-                return this.dataContextTypes;
-            }
-        }
+        public List<Type> DataContextTypes => this.dataContextTypes;
 
         /// <summary>
         /// 加载所有数据上下文类型

@@ -46,6 +46,16 @@ namespace UnityEngine
         {
             this.dataSource ??= this.GetComponentInParent<DataSource>();
         }
+        
+        protected DataBinder FirstDataBinder()
+        {
+            foreach (DataBinder binder in this.binders.Values)
+            {
+                return binder;
+            }
+
+            return default;
+        }
 
         protected virtual void OnDestroy()
         {

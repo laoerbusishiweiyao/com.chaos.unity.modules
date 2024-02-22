@@ -30,11 +30,6 @@ namespace UnityEditor
         {
             if (!pathCaches.ContainsKey(dataContextType))
             {
-                Cache(dataContextType);
-            }
-
-            if (!pathCaches.ContainsKey(dataContextType))
-            {
                 Debug.LogError($"类型 {dataContextType} 未缓存属性路径");
                 return default;
             }
@@ -52,18 +47,8 @@ namespace UnityEditor
         {
             if (!typeCaches.ContainsKey(dataContextType))
             {
-                Cache(dataContextType);
-            }
-
-            if (!typeCaches.ContainsKey(dataContextType))
-            {
                 Debug.LogError($"类型 {dataContextType} 未缓存属性类型");
                 return default;
-            }
-
-            if (!typeCaches[dataContextType].ContainsKey(path))
-            {
-                Cache(dataContextType);
             }
 
             if (!typeCaches[dataContextType].ContainsKey(path))
@@ -73,6 +58,14 @@ namespace UnityEditor
             }
 
             return typeCaches[dataContextType][path];
+        }
+
+        public static void Cache()
+        {
+            foreach (Type type in DataContextOptions.Default.DataContextTypes)
+            {
+                Cache(type);
+            }
         }
 
         /// <summary>

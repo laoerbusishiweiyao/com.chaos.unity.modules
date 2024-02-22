@@ -5,13 +5,13 @@ using System.Reflection;
 
 namespace UnityEngine
 {
-    public sealed class DataBindingSamples : MonoBehaviour
+    public sealed class DataBindingBaseUsage : MonoBehaviour
     {
         private void Awake()
         {
             Dictionary<string, Type> types = new Assembly[]
                 {
-                    typeof(DataBindingSamples).Assembly
+                    typeof(DataBindingBaseUsage).Assembly
                 }
                 .SelectMany(assembly => assembly.GetTypes())
                 .ToDictionary(type => type.FullName);

@@ -38,6 +38,11 @@ namespace UnityEngine
 
         private void OnValidate()
         {
+            if (this.DataContext is not null && !this.DataContext.HasListeners)
+            {
+                this.DataContext.AddListener(this.OnDataContextChanged);
+            }
+
             this.Refresh();
         }
     }

@@ -1,6 +1,11 @@
 # ChangeLog
 
-## [0.0.1]
+## 0.0.1
 + 实现基本绑定机制
-+ 添加TextMeshPro的TextMeshProUGUI文本绑定器
-+ 添加基本使用案列, 运行时动态创建DataContext及更新DataContext时关联的绑定器自动更新UI
++ 添加TextTMPBinder, 实现数据单向绑定
++ 添加数据单向绑定基本案例 - BaseUsage
+
+## 0.0.2
++ 优化数据绑定编辑器数据缓存时间点为编译后自动构建
++ 添加TextTMPInputBinder, 实现数据双向绑定
++ 添加数据双向绑定基本案例 - UpdateSource
