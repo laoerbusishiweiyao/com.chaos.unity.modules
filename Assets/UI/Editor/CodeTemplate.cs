@@ -45,7 +45,8 @@ namespace UnityEditor
         {
             this.Keywords.Clear();
 
-            MatchCollection matches = Regex.Matches(this.Template, @"(?<=\$).*?(?=\$)");
+            MatchCollection matches =
+                Regex.Matches(this.Template, @"(?<=\$)(?<=\$)[\u4E00-\u9FA5A-Za-z0-9_]+(?=\$)(?=\$)");
             foreach (Match match in matches)
             {
                 if (this.Keywords.FindIndex(keyword => keyword.Name == match.Value) > -1)
@@ -66,7 +67,7 @@ namespace UnityEditor
         private void Build()
         {
             StringBuilder builder = new();
-            this.Build(this.Keywords.Select(keyword => keyword.Name).ToDictionary(item => item), builder);
+            this.Build(this.Keywords.ToDictionary(keyword => keyword.Name, keyword => keyword.Value), builder);
             EditorGUIUtility.systemCopyBuffer = builder.ToString();
 
             Debug.Log("模板已生成至剪切板");

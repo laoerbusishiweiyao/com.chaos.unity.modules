@@ -138,7 +138,7 @@ namespace UnityEditor
             {
                 "CodeSnippet/UISettings", @"namespace ET
 {
-    public sealed class UISettings
+    public static class UISettings
     {
         public const string ProjectName = ""$ProjectName$"";
         public const string Prefix = ""UI"";
@@ -200,10 +200,60 @@ namespace ET.Client
 }"
             },
             {
-                "CodeSnippet/UIWindow", @""
+                "CodeSnippet/UIWindow", @"using UnityEngine;
+
+namespace ET.Client
+{
+    [ComponentOf(typeof(UIComponent))]
+    public sealed partial class UI$Name$WindowComponent : Entity, IAwake, IDestroy, IUIWindow, IDataContext
+    {
+        public DataContext DataContext { get; } = new $Name$DataContext();
+
+        public GameObject GameObject { get; set; }
+        public UIWindowOptions Options { get; set; }
+    }
+}"
             },
             {
-                "CodeSnippet/UIDataContext", @""
+                "CodeSnippet/UIWidget", @"using UnityEngine;
+
+namespace ET.Client
+{
+    [ComponentOf(typeof(UIComponent))]
+    public sealed partial class UI$Name$Component : Entity, IAwake, IDestroy, IUIWindow
+    {
+        public GameObject GameObject { get; set; }
+        public UIWidgetOptions Options { get; set; }
+    }
+}"
+            },
+            {
+                "CodeSnippet/UIDataContext", @"using UnityEngine;
+
+namespace ET.Client
+{
+    [EnableClass]
+    public sealed partial class $Name$DataContext : DataContext
+    {
+    }
+}"
+            },
+            {
+                "CodeSnippet/UIDataContextProperty", @"        [SerializeField]
+        [OnValueChanged(nameof(On$大写属性名称$Changed))]
+        [Delayed]
+        private $属性类型$ $小写字段名称$;
+
+        public $属性类型$ $大写属性名称$
+        {
+            get => this.$小写字段名称$;
+            set { this.SetField(ref this.$小写字段名称$, value); }
+        }
+
+        private void On$大写属性名称$Changed()
+        {
+            this.OnDataContextChanged(nameof(this.$大写属性名称$));
+        }"
             },
         };
 
