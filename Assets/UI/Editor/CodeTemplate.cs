@@ -73,7 +73,7 @@ namespace UnityEditor
             Debug.Log("模板已生成至剪切板");
         }
 
-        public void Build(IReadOnlyDictionary<string, string> data, StringBuilder builder)
+        public void Build(IReadOnlyDictionary<string, string> data, StringBuilder builder, bool clear = true)
         {
             List<string> keys = this.Keywords.Select(keyword => keyword.Name).ToList();
             foreach (string key in keys)
@@ -85,7 +85,10 @@ namespace UnityEditor
                 }
             }
 
-            builder.Clear();
+            if (clear)
+            {
+                builder.Clear();
+            }
 
             string content = this.Template;
             foreach (string key in keys)

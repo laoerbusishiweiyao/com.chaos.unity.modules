@@ -60,11 +60,15 @@ namespace UnityEditor
         [FolderPath]
         public string ComponentFolder = "Assets/Scripts/ModelView/Client/UI";
 
+        public string ComponentGenerateFolder => ComponentFolder + "/" + this.ProjectName + "/Generate";
+
         [BoxGroup("设置", centerLabel: true)]
         [BoxGroup("设置/代码生成设置", centerLabel: true)]
         [LabelText("组件系统路径")]
         [FolderPath]
         public string ComponentSystemFolder = "Assets/Scripts/HotfixView/Client/UI";
+        
+        public string SystemGenerateFolder => ComponentSystemFolder + "/" + this.ProjectName + "/Generate";
 
         [BoxGroup("设置", centerLabel: true)]
         [BoxGroup("设置/屏幕设置", centerLabel: true)]

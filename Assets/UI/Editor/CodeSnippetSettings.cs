@@ -116,8 +116,20 @@ namespace UnityEditor
             {
                 Directory.CreateDirectory(directory);
             }
-            
+
             File.WriteAllText(path, builder.ToString());
+        }
+
+        public void Build(string key, Dictionary<string, string> variables, StringBuilder builder)
+        {
+            CodeTemplate template = this.templates.Find(template => template.Path == key);
+            if (template is null)
+            {
+                Debug.LogError($"代码模板 {key} 不存在");
+                return;
+            }
+
+            template.Build(variables, builder, false);
         }
 
         private CodeTemplate AddTemplate(string path, string content = null)
@@ -173,7 +185,7 @@ namespace UnityEditor
 }"
             },
             {
-                "CodeSnippet/UIConfigCategory",@"using System;
+                "CodeSnippet/UIConfigCategory", @"using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -184,7 +196,7 @@ namespace ET.Client
     {
         private readonly Dictionary<Type, UIWindowConfig> configs = new()
         {
-            $Data$
+$Data$
         };
 
         public UIWindowConfig Config<TUIWindow>() where TUIWindow : IUIWindow
@@ -219,22 +231,55 @@ namespace ET.Client
 
 namespace ET.Client
 {
-    [ComponentOf(typeof(UIComponent))]
-    public sealed partial class UI$Name$Component : Entity, IAwake, IDestroy, IUIWindow
+    [ComponentOf(typeof(UI$Parent$WindowComponent))]
+    public sealed partial class UI$Parent$$Type$$Name$Component : Entity, IAwake, IDestroy, IUIWidget
     {
+        public $Parent$$Name$$Type$DataContext DataContext => (this.GetParent<UI$Parent$WindowComponent>().DataContext as $Parent$DataContext).$Name$$Type$;
         public GameObject GameObject { get; set; }
         public UIWidgetOptions Options { get; set; }
     }
 }"
             },
             {
+                "CodeSnippet/UISystem", @"namespace ET.Client
+{
+    [EntitySystemOf(typeof(UI$Name$Component))]
+    [FriendOf(typeof(UI$Name$Component))]
+    public static partial class UI$Name$ComponentSystem
+    {
+        [EntitySystem]
+        private static void Awake(this UI$Name$Component self)
+        {
+        }
+
+        [EntitySystem]
+        private static void Destroy(this UI$Name$Component self)
+        {
+            UnityEngine.Object.Destroy(self.GameObject);
+        }
+    }
+}"
+            },
+            {
                 "CodeSnippet/UIDataContext", @"using UnityEngine;
+using Sirenix.OdinInspector;
 
 namespace ET.Client
 {
     [EnableClass]
     public sealed partial class $Name$DataContext : DataContext
     {
+        public $Name$DataContext()
+        {
+$Statement$
+        }
+
+        public $Name$DataContext(string baseDataContextPath = null) : base(baseDataContextPath)
+        {
+$Statement$
+        }
+
+$Properties$
     }
 }"
             },
@@ -253,7 +298,9 @@ namespace ET.Client
         private void On$大写属性名称$Changed()
         {
             this.OnDataContextChanged(nameof(this.$大写属性名称$));
-        }"
+        }
+
+"
             },
         };
 

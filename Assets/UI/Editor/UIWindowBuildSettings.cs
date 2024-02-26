@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Sirenix.OdinInspector;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -22,6 +24,14 @@ namespace UnityEditor
         [Button("生成", ButtonSizes.Large)]
         [GUIColor(0.4f, 0.8f, 1)]
         public void Build()
+        {
+            this.BuildWindow();
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
+        private void BuildWindow()
         {
             // 如果当前打开的是输出的预制体，则刷新
             var stage = PrefabStageUtility.GetCurrentPrefabStage();
@@ -47,6 +57,9 @@ namespace UnityEditor
 
             UIWindowOptions options = window.AddComponent<UIWindowOptions>();
             UIWindowEditorSettings settings = window.GetComponent<UIWindowEditorSettings>();
+
+            this.BuildCode(settings);
+
             this.Copy(settings, options);
 
             this.BuildWidget(options);
@@ -83,19 +96,8 @@ namespace UnityEditor
                 }
             }
 
-            // 加载控件
-
-            // 加载弹窗
-
             PrefabUtility.SaveAsPrefabAsset(window, path);
             UnityEngine.Object.DestroyImmediate(window);
-
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-        }
-
-        private void BuildWindow()
-        {
         }
 
         private void BuildWidget(UIWindowOptions windowOptions)
@@ -183,6 +185,103 @@ namespace UnityEditor
         private void Copy(UIWidgetEditorSettings settings, UIWidgetOptions options)
         {
             UnityEngine.Object.DestroyImmediate(settings);
+        }
+
+        private void BuildCode(UIWindowEditorSettings windowSettings)
+        {
+            UIToolSettings toolSettings = UIToolSettings.Load();
+            CodeSnippetSettings options = CodeSnippetSettings.Load();
+
+            StringBuilder statementBuilder = new();
+            StringBuilder windowDataContextPropertiesBuilder = new();
+
+            options.Build("CodeSnippet/UIWindow", new Dictionary<string, string>()
+                {
+                    { "Name", windowSettings.WindowName },
+                },
+                $"{toolSettings.ComponentGenerateFolder}/{windowSettings.WindowName}/UI{windowSettings.WindowName}WindowComponent.cs");
+
+            options.Build("CodeSnippet/UISystem", new Dictionary<string, string>()
+                {
+                    { "Name", $"{windowSettings.WindowName}Window" },
+                },
+                $"{toolSettings.SystemGenerateFolder}/{windowSettings.WindowName}/UI{windowSettings.WindowName}WindowComponentSystem.cs");
+
+            foreach (var widget in windowSettings.AllWidget.Keys)
+            {
+                options.Build("CodeSnippet/UIWidget", new Dictionary<string, string>()
+                    {
+                        { "Parent", windowSettings.WindowName },
+                        { "Name", widget },
+                        { "Type", "Widget" },
+                    },
+                    $"{toolSettings.ComponentGenerateFolder}/{windowSettings.WindowName}/UI{windowSettings.WindowName}Widget{widget}Component.cs");
+
+                options.Build("CodeSnippet/UISystem", new Dictionary<string, string>()
+                    {
+                        { "Name", $"{windowSettings.WindowName}Widget{widget}" },
+                    },
+                    $"{toolSettings.SystemGenerateFolder}/{windowSettings.WindowName}/UI{windowSettings.WindowName}Widget{widget}ComponentSystem.cs");
+
+                options.Build("CodeSnippet/UIDataContext", new Dictionary<string, string>()
+                    {
+                        { "Name", $"{windowSettings.WindowName}{widget}Widget" },
+                        { "Statement", "" },
+                        { "Properties", "" },
+                    },
+                    $"{toolSettings.ComponentGenerateFolder}/{windowSettings.WindowName}/{windowSettings.WindowName}{widget}WidgetDataContext.cs");
+
+                statementBuilder.AppendLine(
+                    $"\t\t\tthis.{widget.ToLower()[0]}{widget[1..]}Widget = new(nameof({widget}Widget));");
+                options.Build("CodeSnippet/UIDataContextProperty", new Dictionary<string, string>()
+                {
+                    { "大写属性名称", $"{widget}Widget" },
+                    { "小写字段名称", $"{widget.ToLower()[0]}{widget[1..]}Widget" },
+                    { "属性类型", $"{windowSettings.WindowName}{widget}WidgetDataContext" },
+                }, windowDataContextPropertiesBuilder);
+            }
+
+            foreach (var widget in windowSettings.AllPopup.Keys)
+            {
+                options.Build("CodeSnippet/UIWidget", new Dictionary<string, string>()
+                    {
+                        { "Parent", windowSettings.WindowName },
+                        { "Name", widget },
+                        { "Type", "Popup" },
+                    },
+                    $"{toolSettings.ComponentGenerateFolder}/{windowSettings.WindowName}/UI{windowSettings.WindowName}Popup{widget}Component.cs");
+
+                options.Build("CodeSnippet/UISystem", new Dictionary<string, string>()
+                    {
+                        { "Name", $"{windowSettings.WindowName}Popup{widget}" },
+                    },
+                    $"{toolSettings.SystemGenerateFolder}/{windowSettings.WindowName}/UI{windowSettings.WindowName}Popup{widget}ComponentSystem.cs");
+
+                options.Build("CodeSnippet/UIDataContext", new Dictionary<string, string>()
+                    {
+                        { "Name", $"{windowSettings.WindowName}{widget}Popup" },
+                        { "Statement", "" },
+                        { "Properties", "" },
+                    },
+                    $"{toolSettings.ComponentGenerateFolder}/{windowSettings.WindowName}/{windowSettings.WindowName}{widget}PopupDataContext.cs");
+
+                statementBuilder.AppendLine(
+                    $"\t\t\tthis.{widget.ToLower()[0]}{widget[1..]}Popup = new(nameof({widget}Popup));");
+                options.Build("CodeSnippet/UIDataContextProperty", new Dictionary<string, string>()
+                {
+                    { "大写属性名称", $"{widget}Popup" },
+                    { "小写字段名称", $"{widget.ToLower()[0]}{widget[1..]}Popup" },
+                    { "属性类型", $"{windowSettings.WindowName}{widget}PopupDataContext" },
+                }, windowDataContextPropertiesBuilder);
+            }
+
+            options.Build("CodeSnippet/UIDataContext", new Dictionary<string, string>()
+                {
+                    { "Name", windowSettings.WindowName },
+                    { "Statement", statementBuilder.ToString() },
+                    { "Properties", windowDataContextPropertiesBuilder.ToString() },
+                },
+                $"{toolSettings.ComponentGenerateFolder}/{windowSettings.WindowName}/{windowSettings.WindowName}DataContext.cs");
         }
     }
 }
