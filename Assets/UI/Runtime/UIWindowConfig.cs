@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace UnityEngine
@@ -12,6 +13,8 @@ namespace UnityEngine
 
         public string Asset;
 
-        public Dictionary<string, UIWidgetConfig> Controls = new();
+        public List<Type> DefaultLoadedWidgets = new();
+
+        public Dictionary<Type, UIWidgetConfig> Widgets = new();
     }
 }

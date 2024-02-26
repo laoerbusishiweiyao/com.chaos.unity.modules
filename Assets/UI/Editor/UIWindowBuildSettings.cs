@@ -70,7 +70,7 @@ namespace UnityEditor
                 if (options.AllWidget.ContainsValue(widget))
                 {
                     string widgetPath = string.Join('/', toolSettings.OutputFolder, toolSettings.ProjectName,
-                        options.WindowName, $"UI{options.WindowName}Widget{widget.name}.prefab");
+                        this.WindowName, $"UI{this.WindowName}Widget{widget.name}.prefab");
 
                     PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(widgetPath), widget);
                 }
@@ -78,7 +78,7 @@ namespace UnityEditor
                 if (options.AllPopup.ContainsValue(widget))
                 {
                     string widgetPath = string.Join('/', toolSettings.OutputFolder, toolSettings.ProjectName,
-                        options.WindowName, $"UI{options.WindowName}Popup{widget.name}.prefab");
+                        this.WindowName, $"UI{this.WindowName}Popup{widget.name}.prefab");
 
                     PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(widgetPath), widget);
                 }
@@ -106,7 +106,7 @@ namespace UnityEditor
             foreach (string name in windowOptions.AllWidget.Keys)
             {
                 string sourcePath = string.Join('/', toolSettings.AssetsFolder, toolSettings.ProjectName,
-                    windowOptions.WindowName, "Prefabs", $"UI{windowOptions.WindowName}Widget{name}.prefab");
+                    this.WindowName, "Prefabs", $"UI{this.WindowName}Widget{name}.prefab");
 
                 if (!File.Exists(sourcePath))
                 {
@@ -115,7 +115,7 @@ namespace UnityEditor
                 }
 
                 string outputPath = string.Join('/', toolSettings.OutputFolder, toolSettings.ProjectName,
-                    windowOptions.WindowName, $"UI{windowOptions.WindowName}Widget{name}.prefab");
+                    this.WindowName, $"UI{this.WindowName}Widget{name}.prefab");
                 string directory = System.IO.Path.GetDirectoryName(outputPath);
                 if (directory is not null && !Directory.Exists(directory))
                 {
@@ -136,7 +136,7 @@ namespace UnityEditor
             foreach (string name in windowOptions.AllPopup.Keys)
             {
                 string sourcePath = string.Join('/', toolSettings.AssetsFolder, toolSettings.ProjectName,
-                    windowOptions.WindowName, "Prefabs", $"UI{windowOptions.WindowName}Popup{name}.prefab");
+                    this.WindowName, "Prefabs", $"UI{this.WindowName}Popup{name}.prefab");
                 if (!File.Exists(sourcePath))
                 {
                     Debug.LogError($"窗口控件 {sourcePath} 不存在");
@@ -144,7 +144,7 @@ namespace UnityEditor
                 }
 
                 string outputPath = string.Join('/', toolSettings.OutputFolder, toolSettings.ProjectName,
-                    windowOptions.WindowName, $"UI{windowOptions.WindowName}Popup{name}.prefab");
+                    this.WindowName, $"UI{this.WindowName}Popup{name}.prefab");
                 string directory = System.IO.Path.GetDirectoryName(outputPath);
                 if (directory is not null && !Directory.Exists(directory))
                 {
@@ -165,9 +165,6 @@ namespace UnityEditor
 
         private void Copy(UIWindowEditorSettings settings, UIWindowOptions options)
         {
-            options.WindowName = settings.WindowName;
-            options.Layer = settings.Layer;
-            options.Priority = settings.Priority;
             options.DefaultLoadedWidgets.AddRange(settings.DefaultLoadedWidgets);
             options.WidgetParent = settings.WidgetParent;
             foreach ((string key, RectTransform value) in settings.AllWidget)
@@ -186,10 +183,6 @@ namespace UnityEditor
 
         private void Copy(UIWidgetEditorSettings settings, UIWidgetOptions options)
         {
-            options.WidgetName = settings.WidgetName;
-            options.Type = settings.Type;
-            options.Priority = settings.Priority;
-
             UnityEngine.Object.DestroyImmediate(settings);
         }
     }

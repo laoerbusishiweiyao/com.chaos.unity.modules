@@ -2,7 +2,6 @@ namespace UnityEngine
 {
     public interface IUI
     {
-        string Name { get; set; }
         GameObject GameObject { get; set; }
     }
 

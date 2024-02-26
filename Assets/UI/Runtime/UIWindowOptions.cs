@@ -6,20 +6,6 @@ namespace UnityEngine
     [AddComponentMenu("")]
     public sealed class UIWindowOptions : SerializedMonoBehaviour
     {
-        [LabelText("名称")]
-        [ReadOnly]
-        public string WindowName;
-
-        [BoxGroup("设置", centerLabel: true)]
-        [LabelText("层级")]
-        [ReadOnly]
-        public UILayer Layer = UILayer.Window;
-
-        [BoxGroup("设置", centerLabel: true)]
-        [LabelText("优先级")]
-        [ReadOnly]
-        public int Priority;
-
         [BoxGroup("节点数据", centerLabel: true)]
         [LabelText("默认加载控件集合")]
         [ListDrawerSettings(HideAddButton = true, DraggableItems = false)]

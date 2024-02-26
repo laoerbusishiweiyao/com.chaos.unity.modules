@@ -116,7 +116,7 @@ namespace UnityEditor
             {
                 Directory.CreateDirectory(directory);
             }
-
+            
             File.WriteAllText(path, builder.ToString());
         }
 
@@ -171,6 +171,39 @@ namespace UnityEditor
         public const float DesignScreenHeight_F = $ScreenDesignHeight$f;
     }
 }"
+            },
+            {
+                "CodeSnippet/UIConfigCategory",@"using System;
+using System.Collections.Generic;
+
+namespace ET.Client
+{
+    public sealed class UIConfigCategory
+    {
+        public static readonly UIConfigCategory Default = new();
+
+        private readonly Dictionary<Type, UIWindowConfig> configs = new()
+        {
+            $Data$
+        };
+
+        public UIWindowConfig Config<TUIWindow>() where TUIWindow : IUIWindow
+        {
+            return this.configs[typeof(TUIWindow)];
+        }
+
+        public UIWidgetConfig Config<TUIWindow, TUIWidget>() where TUIWindow : IUIWindow where TUIWidget : IUIWidget
+        {
+            return this.configs[typeof(TUIWindow)].Widgets[typeof(TUIWidget)];
+        }
+    }
+}"
+            },
+            {
+                "CodeSnippet/UIWindow", @""
+            },
+            {
+                "CodeSnippet/UIDataContext", @""
             },
         };
 

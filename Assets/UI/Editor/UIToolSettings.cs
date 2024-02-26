@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Sirenix.OdinInspector;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -80,8 +81,18 @@ namespace UnityEditor
         [FolderPath]
         public string SettingsFolderPath = "Assets/Scripts/ModelView/Client/Module/UI";
 
-        [Button("初始化", ButtonSizes.Gigantic)]
+        [BoxGroup("设置", centerLabel: true)]
+        [ButtonGroup("设置/操作")]
+        [Button("刷新", ButtonSizes.Gigantic)]
         [GUIColor(0.4f, 0.8f, 1)]
+        private void Initialize()
+        {
+            this.BuildUISettings();
+            this.BuildUIConfigCategory();
+
+            AssetDatabase.Refresh();
+        }
+
         private void BuildUISettings()
         {
             if (string.IsNullOrEmpty(this.ProjectName))
@@ -150,10 +161,119 @@ namespace UnityEditor
                     { nameof(ScreenDesignWidth), this.ScreenDesignWidth.ToString() },
                     { nameof(ScreenDesignHeight), this.ScreenDesignHeight.ToString() },
                 }, $"{this.SettingsFolderPath}/UISettings.cs");
-
-            AssetDatabase.Refresh();
         }
 
+        private void BuildUIConfigCategory()
+        {
+            StringBuilder builder = new();
+            foreach (UIWindowBuildSettings window in this.windowSettings)
+            {
+                GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(window.Source);
+                if (asset is null)
+                {
+                    Debug.LogError($"窗口 {window.Source} 不存在");
+                    continue;
+                }
+
+                UIWindowEditorSettings settings = asset.GetComponent<UIWindowEditorSettings>();
+
+                builder.AppendLine("\t\t\t{");
+                builder.AppendLine($"\t\t\t\ttypeof(UI{window.WindowName}WindowComponent), new UIWindowConfig()");
+                builder.AppendLine("\t\t\t\t{");
+
+                builder.AppendLine($"\t\t\t\t\tName = \"{settings.WindowName}\",");
+                builder.AppendLine($"\t\t\t\t\tLayer = UILayer.{settings.Layer},");
+                builder.AppendLine($"\t\t\t\t\tPriority = {settings.Priority},");
+                builder.AppendLine(
+                    $"\t\t\t\t\tAsset = \"{string.Join('/', this.OutputFolder, this.ProjectName, window.WindowName, $"UI{window.WindowName}Window.prefab")}\",");
+                builder.AppendLine("\t\t\t\t\tDefaultLoadedWidgets = new List<Type>()");
+                builder.AppendLine("\t\t\t\t\t{");
+
+                foreach (RectTransform widget in settings.DefaultLoadedWidgets)
+                {
+                    if (settings.AllWidget.ContainsValue(widget))
+                    {
+                        builder.AppendLine($"\t\t\t\t\t\ttypeof(UI{window.WindowName}Widget{widget.name}Component),");
+                    }
+
+                    if (settings.AllPopup.ContainsValue(widget))
+                    {
+                        builder.AppendLine($"\t\t\t\t\t\ttypeof(UI{window.WindowName}Popup{widget.name}Component),");
+                    }
+                }
+
+                builder.AppendLine("\t\t\t\t\t},");
+                builder.AppendLine("\t\t\t\t\tWidgets = new Dictionary<Type, UIWidgetConfig>()");
+                builder.AppendLine("\t\t\t\t\t{");
+
+                foreach (var widget in settings.AllWidget.Keys)
+                {
+                    string widgetSource = window.Source.Replace("/Source/", "/Prefabs/")
+                        .Replace("Source.prefab", $"Widget{widget}.prefab");
+                    GameObject widgetAsset = AssetDatabase.LoadAssetAtPath<GameObject>(widgetSource);
+                    if (widgetAsset is null)
+                    {
+                        Debug.LogError($"控件 {widgetSource} 不存在");
+                        continue;
+                    }
+
+                    UIWidgetEditorSettings widgetSettings = widgetAsset.GetComponent<UIWidgetEditorSettings>();
+
+                    builder.AppendLine("\t\t\t\t\t\t{");
+                    builder.AppendLine(
+                        $"\t\t\t\t\t\t\ttypeof(UI{window.WindowName}Widget{widget}Component), new UIWidgetConfig()");
+                    builder.AppendLine("\t\t\t\t\t\t\t\t{");
+                    builder.AppendLine($"\t\t\t\t\t\t\t\t\tName = \"{widget}\",");
+                    builder.AppendLine($"\t\t\t\t\t\t\t\t\tType = UIWidgetType.{widgetSettings.Type},");
+                    builder.AppendLine($"\t\t\t\t\t\t\t\t\tPriority = {widgetSettings.Priority},");
+                    builder.AppendLine(
+                        $"\t\t\t\t\t\t\t\t\tAsset = \"{string.Join('/', this.OutputFolder, this.ProjectName, window.WindowName, $"UI{window.WindowName}Widget{widget}.prefab")}\",");
+                    builder.AppendLine("\t\t\t\t\t\t\t\t}");
+                    builder.AppendLine("\t\t\t\t\t\t},");
+                }
+
+                foreach (var widget in settings.AllPopup.Keys)
+                {
+                    string widgetSource = window.Source.Replace("/Source/", "/Prefabs/")
+                        .Replace("Source.prefab", $"Popup{widget}.prefab");
+                    GameObject widgetAsset = AssetDatabase.LoadAssetAtPath<GameObject>(widgetSource);
+                    if (widgetAsset is null)
+                    {
+                        Debug.LogError($"控件 {widgetSource} 不存在");
+                        continue;
+                    }
+
+                    UIWidgetEditorSettings widgetSettings = widgetAsset.GetComponent<UIWidgetEditorSettings>();
+
+                    builder.AppendLine("\t\t\t\t\t\t{");
+                    builder.AppendLine(
+                        $"\t\t\t\t\t\t\ttypeof(UI{window.WindowName}Popup{widget}Component), new UIWidgetConfig()");
+                    builder.AppendLine("\t\t\t\t\t\t\t\t{");
+                    builder.AppendLine($"\t\t\t\t\t\t\t\t\tName = \"{widget}\",");
+                    builder.AppendLine($"\t\t\t\t\t\t\t\t\tType = UIWidgetType.{widgetSettings.Type},");
+                    builder.AppendLine($"\t\t\t\t\t\t\t\t\tPriority = {widgetSettings.Priority},");
+                    builder.AppendLine(
+                        $"\t\t\t\t\t\t\t\t\tAsset = \"{string.Join('/', this.OutputFolder, this.ProjectName, window.WindowName, $"UI{window.WindowName}Popup{widget}.prefab")}\",");
+                    builder.AppendLine("\t\t\t\t\t\t\t\t}");
+                    builder.AppendLine("\t\t\t\t\t\t},");
+                }
+
+
+                builder.AppendLine("\t\t\t\t\t}");
+
+                builder.AppendLine("\t\t\t\t}");
+                builder.AppendLine("\t\t\t},");
+            }
+
+            CodeSnippetSettings options = CodeSnippetSettings.Load();
+            options.Build("CodeSnippet/UIConfigCategory", new Dictionary<string, string>()
+                {
+                    { "Data", builder.ToString() },
+                }, $"{this.SettingsFolderPath}/UIConfigCategory.cs");
+        }
+
+        [BoxGroup("设置", centerLabel: true)]
+        [ButtonGroup("设置/操作")]
         [Button("生成", ButtonSizes.Gigantic)]
         [GUIColor(0.4f, 0.8f, 1)]
         private void Build()
@@ -167,7 +287,7 @@ namespace UnityEditor
 
         [BoxGroup("创建UI", centerLabel: true, order: 99)]
         [ButtonGroup("创建UI/操作")]
-        [Button("删除", ButtonSizes.Medium)]
+        [Button("删除", ButtonSizes.Large)]
         [GUIColor(0.4f, 0.8f, 1)]
         private void DeleteWindow()
         {
@@ -195,7 +315,7 @@ namespace UnityEditor
 
         [BoxGroup("创建UI", centerLabel: true, order: 99)]
         [ButtonGroup("创建UI/操作")]
-        [Button("创建", ButtonSizes.Medium)]
+        [Button("创建", ButtonSizes.Large)]
         [GUIColor(0.4f, 0.8f, 1)]
         private void CreateWindow()
         {
@@ -243,15 +363,6 @@ namespace UnityEditor
         {
             string directory = string.Join('/', Application.dataPath[..^6], this.AssetsFolder, this.ProjectName, value,
                 folder);
-            if (directory is not null && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-        }
-
-        private void CreateOutputDirectory(string value)
-        {
-            string directory = string.Join('/', Application.dataPath[..^6], this.OutputFolder, this.ProjectName, value);
             if (directory is not null && !Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
