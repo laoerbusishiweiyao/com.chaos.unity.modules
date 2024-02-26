@@ -175,13 +175,13 @@ namespace UnityEditor
             {
                 "CodeSnippet/UIConfigCategory",@"using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace ET.Client
 {
-    public sealed class UIConfigCategory
+    [Code]
+    public sealed class UIConfigCategory : Singleton<UIConfigCategory>
     {
-        public static readonly UIConfigCategory Default = new();
-
         private readonly Dictionary<Type, UIWindowConfig> configs = new()
         {
             $Data$

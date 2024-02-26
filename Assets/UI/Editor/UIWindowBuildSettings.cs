@@ -3,7 +3,6 @@ using System.IO;
 using Sirenix.OdinInspector;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace UnityEditor
 {
