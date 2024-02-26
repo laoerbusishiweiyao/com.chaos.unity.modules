@@ -25,7 +25,8 @@ namespace UnityEditor
         [GUIColor(0.4f, 0.8f, 1)]
         public void Build()
         {
-            this.BuildWindow();
+            // this.BuildWindow();
+            this.BuildEvent();
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -58,6 +59,7 @@ namespace UnityEditor
             UIWindowOptions options = window.AddComponent<UIWindowOptions>();
             UIWindowEditorSettings settings = window.GetComponent<UIWindowEditorSettings>();
 
+            this.BuildGenerateCode(settings);
             this.BuildCode(settings);
 
             this.Copy(settings, options);
@@ -187,7 +189,7 @@ namespace UnityEditor
             UnityEngine.Object.DestroyImmediate(settings);
         }
 
-        private void BuildCode(UIWindowEditorSettings windowSettings)
+        private void BuildGenerateCode(UIWindowEditorSettings windowSettings)
         {
             UIToolSettings toolSettings = UIToolSettings.Load();
             CodeSnippetSettings options = CodeSnippetSettings.Load();
@@ -282,6 +284,129 @@ namespace UnityEditor
                     { "Properties", windowDataContextPropertiesBuilder.ToString() },
                 },
                 $"{toolSettings.ComponentGenerateFolder}/{windowSettings.WindowName}/{windowSettings.WindowName}DataContext.cs");
+        }
+
+        private void BuildCode(UIWindowEditorSettings windowSettings)
+        {
+            // 生成用户UI - 待定
+        }
+
+        private void BuildEvent()
+        {
+            UIToolSettings toolSettings = UIToolSettings.Load();
+            string sourcePath = string.Join('/', toolSettings.AssetsFolder, toolSettings.ProjectName, this.WindowName,
+                "Source", $"UI{this.WindowName}Source.prefab");
+            GameObject source = AssetDatabase.LoadAssetAtPath<GameObject>(sourcePath);
+            var settings = source.GetComponent<UIWindowEditorSettings>();
+
+            StringBuilder builder = new();
+
+            foreach (string key in settings.AllWidget.Keys)
+            {
+                string path = sourcePath.Replace("/Source/", "/Prefabs/")
+                    .Replace("Source.prefab", $"Widget{key}.prefab");
+                GameObject gameObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                Debug.Log(gameObject);
+                foreach (EventBinderBehaviour behaviour in gameObject.GetComponentsInChildren<EventBinderBehaviour>())
+                {
+                    builder.AppendLine($"\tpublic struct {behaviour.EventName}");
+                    builder.AppendLine("\t{");
+
+                    foreach ((string type, string name) in behaviour.Parameters)
+                    {
+                        builder.AppendLine($"\t\tpublic {type} {name};");
+                    }
+
+                    builder.AppendLine($"\t\tpublic {behaviour.EventName}()");
+                    builder.AppendLine("\t\t{");
+                    builder.AppendLine("\t\t}");
+
+                    builder.AppendLine();
+
+                    builder.AppendLine($"\t\tpublic {behaviour.EventName}(Dictionary<string, string> defaultValues)");
+                    builder.AppendLine("\t\t{");
+
+                    foreach ((string type, string name) in behaviour.Parameters)
+                    {
+                        builder.AppendLine(
+                            $"\t\t\tif (defaultValues.TryGetValue(nameof(this.{name}),out var {name.ToLower()[0]}{name[1..]}))");
+                        builder.AppendLine("\t\t\t{");
+
+                        builder.AppendLine(
+                            $"\t\t\t\tthis.{name} = {this.BuildEvent(type, $"{name.ToLower()[0]}{name[1..]}")};");
+
+                        builder.AppendLine("\t\t\t}");
+
+                        builder.AppendLine();
+                    }
+
+                    builder.AppendLine("\t\t}");
+
+                    builder.AppendLine("\t}");
+                }
+            }
+
+            foreach (string key in settings.AllPopup.Keys)
+            {
+                string path = sourcePath.Replace("/Source/", "/Prefabs/")
+                    .Replace("Source.prefab", $"Popup{key}.prefab");
+                GameObject gameObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                Debug.Log(gameObject);
+                foreach (EventBinderBehaviour behaviour in gameObject.GetComponentsInChildren<EventBinderBehaviour>())
+                {
+                    builder.AppendLine($"\tpublic struct {behaviour.EventName}");
+                    builder.AppendLine("\t{");
+
+                    foreach ((string type, string name) in behaviour.Parameters)
+                    {
+                        builder.AppendLine($"\t\tpublic {type} {name};");
+                    }
+
+                    builder.AppendLine($"\t\tpublic {behaviour.EventName}()");
+                    builder.AppendLine("\t\t{");
+                    builder.AppendLine("\t\t}");
+
+                    builder.AppendLine();
+
+                    builder.AppendLine($"\t\tpublic {behaviour.EventName}(Dictionary<string, string> defaultValues)");
+                    builder.AppendLine("\t\t{");
+
+                    foreach ((string type, string name) in behaviour.Parameters)
+                    {
+                        builder.AppendLine(
+                            $"\t\t\tif (defaultValues.TryGetValue(nameof(this.{name}),out var {name.ToLower()[0]}{name[1..]}))");
+                        builder.AppendLine("\t\t\t{");
+
+                        builder.AppendLine(
+                            $"\t\t\t\tthis.{name} = {this.BuildEvent(type, $"{name.ToLower()[0]}{name[1..]}")};");
+
+                        builder.AppendLine("\t\t\t}");
+
+                        builder.AppendLine();
+                    }
+
+                    builder.AppendLine("\t\t}");
+
+                    builder.AppendLine("\t}");
+                }
+            }
+
+            CodeSnippetSettings options = CodeSnippetSettings.Load();
+            options.Build("CodeSnippet/UIEventType", new Dictionary<string, string>()
+                {
+                    { "EventType", builder.ToString() }
+                }, $"{toolSettings.SettingsFolderPath}/UIEventType.cs");
+        }
+
+        private string BuildEvent(string type, string name)
+        {
+            return type switch
+            {
+                "string" => name,
+                "int" => $"int.Parse({name})",
+                "long" => $"long.Parse({name})",
+                _ => "default",
+            };
         }
     }
 }

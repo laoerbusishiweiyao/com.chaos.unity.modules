@@ -110,7 +110,7 @@ namespace UnityEditor
 
             StringBuilder builder = new();
             template.Build(variables, builder);
-
+            
             string directory = Path.GetDirectoryName(path);
             if (directory is not null && !Directory.Exists(directory))
             {
@@ -301,6 +301,22 @@ $Properties$
         }
 
 "
+            },
+            {
+                "CodeSnippet/UIEventType", @"using System.Collections.Generic;
+
+namespace ET.Client
+{
+    public struct UIOpenWindowEventArgs
+    {
+    }
+
+    public struct UICloseWindowEventArgs
+    {
+    }
+
+$EventType$
+}"
             },
         };
 
