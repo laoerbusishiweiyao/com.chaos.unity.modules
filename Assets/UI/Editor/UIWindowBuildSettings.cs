@@ -306,7 +306,6 @@ namespace UnityEditor
                 string path = sourcePath.Replace("/Source/", "/Prefabs/")
                     .Replace("Source.prefab", $"Widget{key}.prefab");
                 GameObject gameObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                Debug.Log(gameObject);
                 foreach (EventBinderBehaviour behaviour in gameObject.GetComponentsInChildren<EventBinderBehaviour>())
                 {
                     builder.AppendLine($"\tpublic struct {behaviour.EventName}");
@@ -351,7 +350,6 @@ namespace UnityEditor
                 string path = sourcePath.Replace("/Source/", "/Prefabs/")
                     .Replace("Source.prefab", $"Popup{key}.prefab");
                 GameObject gameObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                Debug.Log(gameObject);
                 foreach (EventBinderBehaviour behaviour in gameObject.GetComponentsInChildren<EventBinderBehaviour>())
                 {
                     builder.AppendLine($"\tpublic struct {behaviour.EventName}");
