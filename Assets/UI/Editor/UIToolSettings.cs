@@ -4,6 +4,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UnityEditor
 {
@@ -29,8 +30,6 @@ namespace UnityEditor
 
             return options;
         }
-
-        public const string Prefix = "UI";
 
         [BoxGroup("设置", centerLabel: true)]
         [BoxGroup("设置/基本设置", centerLabel: true)]
@@ -79,9 +78,9 @@ namespace UnityEditor
         [BoxGroup("设置", centerLabel: true)]
         [LabelText("UI设置代码生成文件夹")]
         [FolderPath]
-        public string SettingsFolderPath = "Assets/Scripts/Loader/MonoBehaviour";
+        public string SettingsFolderPath = "Assets/Scripts/ModelView/Client/Module/UI";
 
-        [Button("生成", ButtonSizes.Gigantic)]
+        [Button("初始化", ButtonSizes.Gigantic)]
         [GUIColor(0.4f, 0.8f, 1)]
         private void BuildUISettings()
         {
@@ -155,44 +154,115 @@ namespace UnityEditor
             AssetDatabase.Refresh();
         }
 
+        [Button("生成", ButtonSizes.Gigantic)]
+        [GUIColor(0.4f, 0.8f, 1)]
+        private void Build()
+        {
+        }
+
+        [FormerlySerializedAs("UIName")]
         [BoxGroup("创建UI", centerLabel: true, order: 99)]
         [LabelText("UI名称")]
-        public string UIName;
+        public string WindowName;
 
         [BoxGroup("创建UI", centerLabel: true, order: 99)]
-        [Button("创建", ButtonSizes.Medium)]
+        [ButtonGroup("创建UI/操作")]
+        [Button("删除", ButtonSizes.Medium)]
         [GUIColor(0.4f, 0.8f, 1)]
-        private void AddUIConfig()
+        private void DeleteWindow()
         {
-            if (string.IsNullOrEmpty(this.UIName))
+            if (string.IsNullOrEmpty(this.WindowName))
             {
-                Debug.LogError("UI名称不能为空");
+                Debug.LogError("名称不能为空");
                 return;
             }
 
-            CreateWindowPrefab(this.UIName);
-            this.UIName = string.Empty;
+            if (!this.Windows.Contains(this.WindowName))
+            {
+                Debug.LogError("窗口不存在");
+                return;
+            }
+
+            UIWindowBuildSettings settings =
+                this.windowSettings.Find(settings => settings.WindowName == this.WindowName);
+            this.windowSettings.Remove(settings);
+
+            this.WindowName = string.Empty;
+
+            UIToolWindow.Rebuild();
+            AssetDatabase.Refresh();
+        }
+
+        [BoxGroup("创建UI", centerLabel: true, order: 99)]
+        [ButtonGroup("创建UI/操作")]
+        [Button("创建", ButtonSizes.Medium)]
+        [GUIColor(0.4f, 0.8f, 1)]
+        private void CreateWindow()
+        {
+            if (string.IsNullOrEmpty(this.WindowName))
+            {
+                Debug.LogError("名称不能为空");
+                return;
+            }
+
+            if (this.Windows.Contains(this.WindowName))
+            {
+                Debug.LogError("窗口已存在");
+                return;
+            }
+
+            CreateAssetsDirectory(this.WindowName, "Source");
+            CreateAssetsDirectory(this.WindowName, "Atlas");
+            CreateAssetsDirectory(this.WindowName, "Prefabs");
+            CreateAssetsDirectory(this.WindowName, "Sprites");
+
+            GameObject source = CreateWindowPrefab(this.WindowName);
+
+            UIWindowBuildSettings buildSettings = new UIWindowBuildSettings()
+            {
+                WindowName = this.WindowName, Path = $"UIBuilder/{this.WindowName}Window",
+                Source = AssetDatabase.GetAssetPath(source)
+            };
+            this.WindowSettings.Add(buildSettings);
+
+            this.WindowName = string.Empty;
+
+            UIToolWindow.Rebuild();
+            AssetDatabase.Refresh();
         }
 
         [SerializeField]
         [HideInInspector]
-        private List<UIConfig> windows = new();
+        private List<UIWindowBuildSettings> windowSettings = new();
 
-        public List<UIConfig> Windows => this.windows;
+        public List<UIWindowBuildSettings> WindowSettings => this.windowSettings;
 
-        public List<string> UINames => this.windows.Select(config => config.Name).ToList();
+        public List<string> Windows => this.windowSettings.Select(settings => settings.WindowName).ToList();
 
-        private void UpdateConfigAsset(UIConfig config)
+        private void CreateAssetsDirectory(string value, string folder)
         {
-            config.Asset = string.Join('/', this.AssetsFolder, this.ProjectName, config.Name,
-                $"{Prefix}{config.Name}{config.Type}.prefab");
+            string directory = string.Join('/', Application.dataPath[..^6], this.AssetsFolder, this.ProjectName, value,
+                folder);
+            if (directory is not null && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
         }
 
-        public void CreateWindowPrefab(string value)
+        private void CreateOutputDirectory(string value)
+        {
+            string directory = string.Join('/', Application.dataPath[..^6], this.OutputFolder, this.ProjectName, value);
+            if (directory is not null && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+        }
+
+        private GameObject CreateWindowPrefab(string value)
         {
             string path = string.Join('/', Application.dataPath[..^6], this.AssetsFolder, this.ProjectName, value,
                 "Source",
-                $"{Prefix}{value}Source.prefab");
+                $"UI{value}Source.prefab");
             string directory = Path.GetDirectoryName(path);
             if (directory is not null && !Directory.Exists(directory))
             {
@@ -201,7 +271,7 @@ namespace UnityEditor
 
             string name = Path.GetFileNameWithoutExtension(path);
 
-            GameObject window = new(name, typeof(RectTransform), typeof(UIOptions));
+            GameObject window = new(name, typeof(RectTransform), typeof(UIWindowEditorSettings));
             window.GetComponent<RectTransform>().SetFullScreen();
 
             GameObject background = new("BackgroundTrigger", typeof(RectTransform), typeof(UITrigger));
@@ -216,8 +286,8 @@ namespace UnityEditor
             popup.transform.SetParent(window.transform);
             popup.GetComponent<RectTransform>().SetFullScreen();
 
-            UIOptions options = window.GetComponent<UIOptions>();
-            options.Name = value;
+            UIWindowEditorSettings options = window.GetComponent<UIWindowEditorSettings>();
+            options.WindowName = value;
             options.WidgetParent = control.GetComponent<RectTransform>();
             options.PopupParent = popup.GetComponent<RectTransform>();
 
@@ -226,6 +296,8 @@ namespace UnityEditor
 
             Selection.activeObject =
                 PrefabStageUtility.OpenPrefab(AssetDatabase.GetAssetPath(prefab)).prefabContentsRoot;
+
+            return prefab;
         }
     }
 }

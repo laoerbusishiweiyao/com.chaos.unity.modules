@@ -1,14 +1,69 @@
 #if UNITY_EDITOR
+using System.Collections.Generic;
 using System.IO;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEngine.Serialization;
 
 namespace UnityEngine
 {
-    public sealed partial class UIOptions
+    [AddComponentMenu("")]
+    public sealed class UIWindowEditorSettings : SerializedMonoBehaviour
     {
+        [LabelText("名称")]
+        [ReadOnly]
+        public string WindowName;
+
+        [BoxGroup("设置", centerLabel: true)]
+        [LabelText("层级")]
+        public UILayer Layer = UILayer.Window;
+
+        [BoxGroup("设置", centerLabel: true)]
+        [LabelText("优先级")]
+        public int Priority;
+
+        [BoxGroup("节点数据", centerLabel: true)]
+        [LabelText("默认加载控件集合")]
+        [Tooltip("拖拽赋值")]
+        [ListDrawerSettings(HideAddButton = true, DraggableItems = false)]
+        public List<RectTransform> DefaultLoadedWidgets = new();
+
+        [BoxGroup("节点数据", centerLabel: true)]
+        [BoxGroup("节点数据/控件", centerLabel: true)]
+        [LabelText("所有控件父节点")]
+        [ReadOnly]
+        public RectTransform WidgetParent;
+
+        [BoxGroup("节点数据", centerLabel: true)]
+        [BoxGroup("节点数据/控件", centerLabel: true)]
+        [LabelText("控件集合")]
+        [DictionaryDrawerSettings(
+            KeyLabel = "名称",
+            ValueLabel = "定位点",
+            IsReadOnly = true,
+            DisplayMode = DictionaryDisplayOptions.OneLine)]
+        [ReadOnly]
+        public Dictionary<string, RectTransform> AllWidget = new();
+
+        [BoxGroup("节点数据", centerLabel: true)]
+        [BoxGroup("节点数据/弹窗", centerLabel: true)]
+        [LabelText("所有弹窗父节点")]
+        [ReadOnly]
+        public RectTransform PopupParent;
+
+        [BoxGroup("节点数据", centerLabel: true)]
+        [BoxGroup("节点数据/弹窗", centerLabel: true)]
+        [LabelText("弹窗集合")]
+        [DictionaryDrawerSettings(
+            KeyLabel = "名称",
+            ValueLabel = "定位点",
+            IsReadOnly = true,
+            DisplayMode = DictionaryDisplayOptions.OneLine)]
+        [ReadOnly]
+        public Dictionary<string, RectTransform> AllPopup = new();
+
+        #region Editor
+
         public bool IsSource =>
             this.name.EndsWith("Source") && EditorSceneManager.IsPreviewSceneObject(this.gameObject);
 
@@ -52,20 +107,23 @@ namespace UnityEngine
             locator.transform.SetParent(this.PopupParent);
             locator.GetComponent<RectTransform>().SetFullScreen();
 
-            GameObject window = new(name, typeof(RectTransform));
-            window.transform.SetParent(locator.transform);
-            window.GetComponent<RectTransform>().SetFullScreen();
-            window.name = Path.GetFileNameWithoutExtension(path);
+            GameObject widget = new(name, typeof(RectTransform), typeof(UIWidgetEditorSettings));
+            widget.transform.SetParent(locator.transform);
+            widget.GetComponent<RectTransform>().SetFullScreen();
+            widget.name = Path.GetFileNameWithoutExtension(path);
 
             GameObject background = new("BackgroundTrigger", typeof(RectTransform), typeof(UITrigger));
-            background.transform.SetParent(window.transform);
+            background.transform.SetParent(widget.transform);
             background.GetComponent<RectTransform>().SetFullScreen();
 
-            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(window, path);
-            DestroyImmediate(window);
-            GameObject popup = PrefabUtility.InstantiatePrefab(prefab, locator.transform) as GameObject;
+            UIWidgetEditorSettings options = widget.GetComponent<UIWidgetEditorSettings>();
+            options.WidgetName = this.InputName;
+            options.Type = UIWidgetType.Popup;
 
-            Selection.activeObject = popup;
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(widget, path);
+            DestroyImmediate(widget);
+
+            PrefabUtility.InstantiatePrefab(prefab, locator.transform);
 
             this.AllPopup[this.InputName] = locator.GetComponent<RectTransform>();
 
@@ -113,77 +171,26 @@ namespace UnityEngine
             locator.transform.SetParent(this.WidgetParent);
             locator.GetComponent<RectTransform>().SetFullScreen();
 
-            GameObject widget = new(name, typeof(RectTransform));
+            GameObject widget = new(name, typeof(RectTransform), typeof(UIWidgetEditorSettings));
             widget.transform.SetParent(locator.transform);
             widget.GetComponent<RectTransform>().SetFullScreen();
             widget.name = Path.GetFileNameWithoutExtension(path);
 
+            UIWidgetEditorSettings options = widget.GetComponent<UIWidgetEditorSettings>();
+            options.WidgetName = this.InputName;
+            options.Type = UIWidgetType.Default;
+
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(widget, path);
             DestroyImmediate(widget);
-            GameObject popup = PrefabUtility.InstantiatePrefab(prefab, locator.transform) as GameObject;
 
-            Selection.activeObject = popup;
+            PrefabUtility.InstantiatePrefab(prefab, locator.transform);
 
             this.AllWidget[this.InputName] = locator.GetComponent<RectTransform>();
 
             this.InputName = string.Empty;
         }
 
-        [PropertySpace]
-        [ShowIf(nameof(IsSource), true)]
-        [Tooltip("生成预制及代码")]
-        [Button("生成", ButtonSizes.Gigantic)]
-        [GUIColor(0.4f, 0.8f, 1)]
-        private void Create()
-        {
-            if (!EditorSceneManager.IsPreviewSceneObject(this.gameObject))
-            {
-                Debug.LogError("非预制体编辑模式禁止添加控件");
-                return;
-            }
-
-            if (PrefabStageUtility.GetCurrentPrefabStage().prefabContentsRoot != this.gameObject)
-            {
-                Debug.LogError("非根预制体禁止生成");
-                return;
-            }
-
-            string path = string.Join('/', Application.dataPath[..^6],
-                    PrefabStageUtility.GetPrefabStage(this.gameObject).assetPath)
-                .Replace("/Source/", "/Prefabs/")
-                .Replace("Source.prefab", "Window.prefab");
-
-            string directory = Path.GetDirectoryName(path);
-            if (directory is not null && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            GameObject window = Instantiate(this.gameObject);
-            UIOptions options = window.GetComponent<UIOptions>();
-
-            // 清理控件
-            foreach (var widget in options.AllWidget.Values)
-            {
-                if (options.DefaultLoadedWidgets.Contains(widget))
-                {
-                    continue;
-                }
-
-                widget.CleanImmediate();
-            }
-
-            // 清理弹窗
-            foreach (var popup in options.AllPopup.Values)
-            {
-                popup.CleanImmediate();
-            }
-
-            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(window, path);
-            DestroyImmediate(window);
-
-            Selection.activeObject = prefab;
-        }
+        #endregion
     }
 }
 #endif

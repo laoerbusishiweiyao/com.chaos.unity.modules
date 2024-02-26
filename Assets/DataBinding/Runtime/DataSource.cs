@@ -5,12 +5,15 @@ using Sirenix.Serialization;
 
 namespace UnityEngine
 {
+    [ExecuteAlways]
     [AddComponentMenu("DataBinding/DataSource")]
     public sealed partial class DataSource : SerializedMonoBehaviour
     {
         public Type DataContextType => this.DataContext?.GetType();
 
-        [HideLabel] [BoxGroup("数据上下文", centerLabel: true)] [TypeFilter("DataContextTypes", DrawValueNormally = true)]
+        [HideLabel]
+        [BoxGroup("数据上下文", centerLabel: true)]
+        [TypeFilter("DataContextTypes", DrawValueNormally = true)]
         public DataContext DataContext;
 
         [OdinSerialize]
@@ -102,6 +105,58 @@ namespace UnityEngine
                 behaviour.Initialize();
                 behaviour.Unbind();
                 behaviour.Bind();
+                behaviour.Refresh();
+            }
+        }
+
+        private void Start()
+        {
+            foreach (DataBinderBehaviour behaviour in this.GetComponentsInChildren<DataBinderBehaviour>())
+            {
+                foreach (var path in behaviour.Binders.Keys)
+                {
+                    if (!this.binders.ContainsKey(path))
+                    {
+                        this.binders.Add(path, new List<DataBinderBehaviour>());
+                    }
+
+                    if (this.binders[path].Contains(behaviour))
+                    {
+                        Debug.LogError($"重复绑定 {path} - {behaviour}");
+                        return;
+                    }
+
+                    this.binders[path].Add(behaviour);
+
+                    if (this.DataContext is null)
+                    {
+                        return;
+                    }
+                }
+
+                behaviour.Initialize();
+                behaviour.Refresh();
+            }
+        }
+
+        private void OnDestroy()
+        {
+            List<DataBinderBehaviour> behaviours = new();
+            foreach (List<DataBinderBehaviour> components in this.binders.Values)
+            {
+                foreach (DataBinderBehaviour behaviour in components)
+                {
+                    if (behaviours.Contains(behaviour))
+                    {
+                        continue;
+                    }
+
+                    behaviours.Add(behaviour);
+                }
+            }
+            
+            foreach (DataBinderBehaviour behaviour in behaviours)
+            {
                 behaviour.Refresh();
             }
         }

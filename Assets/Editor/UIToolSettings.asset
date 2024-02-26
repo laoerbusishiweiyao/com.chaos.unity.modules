@@ -29,6 +29,9 @@ MonoBehaviour:
   ComponentSystemFolder: Assets/Scripts/HotfixView/Client/UI
   ScreenDesignWidth: 1920
   ScreenDesignHeight: 1080
-  SettingsFolderPath: Assets/Scripts/Loader/MonoBehaviour
-  UIName: 
-  windows: []
+  SettingsFolderPath: Assets/Scripts/ModelView/Client/Module/UI
+  WindowName: 
+  windowSettings:
+  - WindowName: Arena
+    Path: UIBuilder/ArenaWindow
+    Source: Assets/Res/UI/Chaos/Arena/Source/UIArenaSource.prefab

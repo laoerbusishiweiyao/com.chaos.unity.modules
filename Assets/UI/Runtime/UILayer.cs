@@ -15,7 +15,7 @@ namespace UnityEngine
         Popup = 2,
 
         [LabelText("常规层")]
-        Common = 3,
+        Window = 3,
 
         [LabelText("场景层")]
         Scene = 4,

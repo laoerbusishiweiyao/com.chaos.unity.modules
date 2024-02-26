@@ -1,4 +1,3 @@
-using System.IO;
 using Sirenix.OdinInspector.Editor;
 using UnityEngine;
 
@@ -24,9 +23,10 @@ namespace UnityEditor
             {
                 UIToolSettings options = UIToolSettings.Load();
                 this.tree.AddObjectAtPath("UIBuilder", options);
-                foreach (var config in options.Windows)
+
+                foreach (var setting in options.WindowSettings)
                 {
-                    this.tree.Add($"UIBuilder/{config.Name}", config);
+                    this.tree.Add(setting.Path, setting);
                 }
             }
 

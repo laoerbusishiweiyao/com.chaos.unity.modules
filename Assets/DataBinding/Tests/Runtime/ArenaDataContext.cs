@@ -5,11 +5,19 @@ namespace UnityEngine
 {
     public sealed partial class TestAddress : DataContext
     {
-        [SerializeField] [OnValueChanged(nameof(OnCityChanged))] [Delayed]
+        [SerializeField]
+        [OnValueChanged(nameof(OnCityChanged))]
+        [Delayed]
         private string city;
+
+        public TestAddress()
+        {
+            this.school = new TestSchool(nameof(School));
+        }
 
         public TestAddress(string baseDataContextPath = null) : base(baseDataContextPath)
         {
+            this.school = new TestSchool(nameof(School));
         }
 
         public string City
@@ -23,7 +31,9 @@ namespace UnityEngine
             this.OnDataContextChanged(nameof(this.City));
         }
 
-        [SerializeField] [OnValueChanged(nameof(OnStreetChanged))] [Delayed]
+        [SerializeField]
+        [OnValueChanged(nameof(OnStreetChanged))]
+        [Delayed]
         private string street;
 
         public string Street
@@ -36,9 +46,11 @@ namespace UnityEngine
         {
             this.OnDataContextChanged(nameof(this.Street));
         }
-        
-        [SerializeField] [OnValueChanged(nameof(OnTestSchoolChanged))] [Delayed]
-        private TestSchool school = new TestSchool(nameof(School));
+
+        [SerializeField]
+        [OnValueChanged(nameof(OnTestSchoolChanged))]
+        [Delayed]
+        private TestSchool school;
 
         public TestSchool School
         {
@@ -51,10 +63,12 @@ namespace UnityEngine
             this.OnDataContextChanged(nameof(this.School));
         }
     }
-    
+
     public sealed partial class TestSchool : DataContext
     {
-        [SerializeField] [OnValueChanged(nameof(OnCityChanged))] [Delayed]
+        [SerializeField]
+        [OnValueChanged(nameof(OnCityChanged))]
+        [Delayed]
         private string city;
 
         public string City
@@ -68,7 +82,9 @@ namespace UnityEngine
             this.OnDataContextChanged(nameof(this.City));
         }
 
-        [SerializeField] [OnValueChanged(nameof(OnStreetChanged))] [Delayed]
+        [SerializeField]
+        [OnValueChanged(nameof(OnStreetChanged))]
+        [Delayed]
         private string street;
 
         public TestSchool(string baseDataContextPath = null) : base(baseDataContextPath)
@@ -89,7 +105,9 @@ namespace UnityEngine
 
     public sealed class ArenaDataContext : DataContext
     {
-        [SerializeField] [OnValueChanged(nameof(OnNameChanged))] [Delayed]
+        [SerializeField]
+        [OnValueChanged(nameof(OnNameChanged))]
+        [Delayed]
         private string name;
 
         public string Name
@@ -103,7 +121,9 @@ namespace UnityEngine
             this.OnDataContextChanged(nameof(this.Name));
         }
 
-        [SerializeField] [OnValueChanged(nameof(OnAgeChanged))] [Delayed]
+        [SerializeField]
+        [OnValueChanged(nameof(OnAgeChanged))]
+        [Delayed]
         private int age;
 
         public int Age
@@ -117,7 +137,9 @@ namespace UnityEngine
             this.OnDataContextChanged(nameof(this.Age));
         }
 
-        [SerializeField] [OnValueChanged(nameof(OnAddressChanged))] [Delayed]
+        [SerializeField]
+        [OnValueChanged(nameof(OnAddressChanged))]
+        [Delayed]
         private TestAddress address = new TestAddress(nameof(Address));
 
         public TestAddress Address
