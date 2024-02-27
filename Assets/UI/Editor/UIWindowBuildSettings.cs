@@ -327,15 +327,7 @@ namespace UnityEditor
 
                     foreach ((string type, string name) in behaviour.Parameters)
                     {
-                        builder.AppendLine(
-                            $"\t\t\tif (defaultValues.TryGetValue(nameof(this.{name}),out var {name.ToLower()[0]}{name[1..]}))");
-                        builder.AppendLine("\t\t\t{");
-
-                        builder.AppendLine(
-                            $"\t\t\t\tthis.{name} = {this.BuildEvent(type, $"{name.ToLower()[0]}{name[1..]}")};");
-
-                        builder.AppendLine("\t\t\t}");
-
+                        builder.AppendLine($"\t\t\tthis.{name} = defaultValues.{this.BuildEvent(type, name)}");
                         builder.AppendLine();
                     }
 
@@ -355,35 +347,31 @@ namespace UnityEditor
                     builder.AppendLine($"\tpublic struct {behaviour.EventName}");
                     builder.AppendLine("\t{");
 
-                    foreach ((string type, string name) in behaviour.Parameters)
+                    if (behaviour.Parameters.Count > 0)
                     {
-                        builder.AppendLine($"\t\tpublic {type} {name};");
-                    }
+                        foreach ((string type, string name) in behaviour.Parameters)
+                        {
+                            builder.AppendLine($"\t\tpublic {type} {name};");
+                        }
 
-                    builder.AppendLine($"\t\tpublic {behaviour.EventName}()");
-                    builder.AppendLine("\t\t{");
-                    builder.AppendLine("\t\t}");
-
-                    builder.AppendLine();
-
-                    builder.AppendLine($"\t\tpublic {behaviour.EventName}(Dictionary<string, string> defaultValues)");
-                    builder.AppendLine("\t\t{");
-
-                    foreach ((string type, string name) in behaviour.Parameters)
-                    {
-                        builder.AppendLine(
-                            $"\t\t\tif (defaultValues.TryGetValue(nameof(this.{name}),out var {name.ToLower()[0]}{name[1..]}))");
-                        builder.AppendLine("\t\t\t{");
-
-                        builder.AppendLine(
-                            $"\t\t\t\tthis.{name} = {this.BuildEvent(type, $"{name.ToLower()[0]}{name[1..]}")};");
-
-                        builder.AppendLine("\t\t\t}");
+                        builder.AppendLine($"\t\tpublic {behaviour.EventName}()");
+                        builder.AppendLine("\t\t{");
+                        builder.AppendLine("\t\t}");
 
                         builder.AppendLine();
-                    }
 
-                    builder.AppendLine("\t\t}");
+                        builder.AppendLine(
+                            $"\t\tpublic {behaviour.EventName}(Dictionary<string, string> defaultValues)");
+                        builder.AppendLine("\t\t{");
+
+                        foreach ((string type, string name) in behaviour.Parameters)
+                        {
+                            builder.AppendLine($"\t\t\tthis.{name} = defaultValues.{this.BuildEvent(type, name)}");
+                            builder.AppendLine();
+                        }
+
+                        builder.AppendLine("\t\t}");
+                    }
 
                     builder.AppendLine("\t}");
                 }
@@ -400,9 +388,11 @@ namespace UnityEditor
         {
             return type switch
             {
-                "string" => name,
-                "int" => $"int.Parse({name})",
-                "long" => $"long.Parse({name})",
+                "string" => $"GetValueOrDefault(nameof(this.{name}));",
+                "int" =>
+                    $".TryGetValue(nameof(this.{name}), out string {name.ToLower()[0]}{name[1..]}) ? int.Parse({name.ToLower()[0]}{name[1..]}) : default;",
+                "long" =>
+                    $".TryGetValue(nameof(this.{name}), out string {name.ToLower()[0]}{name[1..]}) ? long.Parse({name.ToLower()[0]}{name[1..]}) : default;",
                 _ => "default",
             };
         }
