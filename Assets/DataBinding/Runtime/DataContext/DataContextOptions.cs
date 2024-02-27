@@ -13,7 +13,8 @@ namespace UnityEngine
         /// <summary>
         /// 数据上下文关联数据类型
         /// </summary>
-        public readonly List<Type> DataTypes = new() { typeof(bool), typeof(int), typeof(string), };
+        public readonly List<Type> DataTypes = new()
+            { typeof(int), typeof(float), typeof(long), typeof(bool), typeof(string), };
 
         private readonly List<Type> dataContextTypes = new();
 

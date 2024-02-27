@@ -27,11 +27,22 @@ namespace UnityEditor
             Selection.activeGameObject.AddComponent<TextTMPBinder>();
         }
 
+        [MenuItem("GameObject/DataBinding/SliderBinder", false, -1)]
+        private static void AddSliderBinder()
+        {
+            if (Selection.activeGameObject is null)
+            {
+                return;
+            }
+
+            Selection.activeGameObject.AddComponent<SliderBinder>();
+        }
+
         static DataBindingMenuItem()
         {
             DataContextOptions.Default.DataContextTypes.Clear();
             DataContextOptions.Default.DataContextTypes.AddRange(TypeCache.GetTypesDerivedFrom<DataContext>());
-            
+
             DataContext.Build();
             DataContextCache.Cache();
         }
