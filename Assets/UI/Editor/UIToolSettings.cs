@@ -294,7 +294,7 @@ namespace UnityEditor
                 }
 
                 var settings = source.GetComponent<UIWindowEditorSettings>();
-
+                List<string> eventNames = new();
                 foreach (string key in settings.AllWidget.Keys)
                 {
                     string path = sourcePath.Replace("/Source/", "/Prefabs/")
@@ -303,6 +303,13 @@ namespace UnityEditor
                     foreach (EventBinderBehaviour behaviour in
                              gameObject.GetComponentsInChildren<EventBinderBehaviour>())
                     {
+                        if (eventNames.Contains(behaviour.EventName))
+                        {
+                            continue;
+                        }
+
+                        eventNames.Add(behaviour.EventName);
+                        
                         builder.AppendLine(
                             $"\t\t\t{{ nameof({behaviour.EventName}), new KeyValuePair<Type, Type>(typeof(UI{windowSetting.WindowName}WindowComponent), typeof({behaviour.EventName})) }},");
                     }
@@ -316,6 +323,13 @@ namespace UnityEditor
                     foreach (EventBinderBehaviour behaviour in
                              gameObject.GetComponentsInChildren<EventBinderBehaviour>())
                     {
+                        if (eventNames.Contains(behaviour.EventName))
+                        {
+                            continue;
+                        }
+
+                        eventNames.Add(behaviour.EventName);
+                        
                         builder.AppendLine(
                             $"\t\t\t{{ nameof({behaviour.EventName}), new KeyValuePair<Type, Type>(typeof(UI{windowSetting.WindowName}WindowComponent), typeof({behaviour.EventName})) }},");
                     }
