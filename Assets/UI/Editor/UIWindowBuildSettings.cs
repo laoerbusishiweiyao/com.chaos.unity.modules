@@ -349,7 +349,7 @@ namespace UnityEditor
             options.Build("CodeSnippet/UIEventType", new Dictionary<string, string>()
                 {
                     { "EventType", builder.ToString() }
-                }, $"{toolSettings.SettingsFolderPath}/UIEventType.cs");
+                }, $"{toolSettings.ComponentGenerateFolder}/{this.WindowName}/UIEventType.cs");
         }
     }
 }

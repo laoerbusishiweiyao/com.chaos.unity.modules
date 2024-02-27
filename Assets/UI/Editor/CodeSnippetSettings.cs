@@ -311,14 +311,6 @@ $Properties$
 
 namespace ET.Client
 {
-    public struct UIOpenEventArgs
-    {
-    }
-
-    public struct UICloseEventArgs
-    {
-    }
-
 $EventType$
 }"
             },
