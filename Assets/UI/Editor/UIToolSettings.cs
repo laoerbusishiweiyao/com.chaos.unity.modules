@@ -67,7 +67,7 @@ namespace UnityEditor
         [LabelText("组件系统路径")]
         [FolderPath]
         public string ComponentSystemFolder = "Assets/Scripts/HotfixView/Client/UI";
-        
+
         public string SystemGenerateFolder => ComponentSystemFolder + "/" + this.ProjectName + "/Generate";
 
         [BoxGroup("设置", centerLabel: true)]
@@ -93,6 +93,7 @@ namespace UnityEditor
         {
             this.BuildUISettings();
             this.BuildUIConfigCategory();
+            this.BuildUIEventSystem();
 
             AssetDatabase.Refresh();
         }
@@ -274,6 +275,58 @@ namespace UnityEditor
                 {
                     { "Data", builder.ToString() },
                 }, $"{this.SettingsFolderPath}/UIConfigCategory.cs");
+        }
+
+        private void BuildUIEventSystem()
+        {
+            StringBuilder builder = new();
+
+            foreach (UIWindowBuildSettings windowSetting in this.windowSettings)
+            {
+                string sourcePath = string.Join('/', this.AssetsFolder, this.ProjectName,
+                    windowSetting.WindowName,
+                    "Source", $"UI{windowSetting.WindowName}Source.prefab");
+                GameObject source = AssetDatabase.LoadAssetAtPath<GameObject>(sourcePath);
+                if (source is null)
+                {
+                    Debug.LogError($"窗口 {windowSetting.WindowName} 不存在 - {sourcePath}");
+                    continue;
+                }
+
+                var settings = source.GetComponent<UIWindowEditorSettings>();
+
+                foreach (string key in settings.AllWidget.Keys)
+                {
+                    string path = sourcePath.Replace("/Source/", "/Prefabs/")
+                        .Replace("Source.prefab", $"Widget{key}.prefab");
+                    GameObject gameObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                    foreach (EventBinderBehaviour behaviour in
+                             gameObject.GetComponentsInChildren<EventBinderBehaviour>())
+                    {
+                        builder.AppendLine(
+                            $"\t\t\t{{ nameof({behaviour.EventName}), new KeyValuePair<Type, Type>(typeof(UI{windowSetting.WindowName}WindowComponent), typeof({behaviour.EventName})) }},");
+                    }
+                }
+
+                foreach (string key in settings.AllPopup.Keys)
+                {
+                    string path = sourcePath.Replace("/Source/", "/Prefabs/")
+                        .Replace("Source.prefab", $"Popup{key}.prefab");
+                    GameObject gameObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                    foreach (EventBinderBehaviour behaviour in
+                             gameObject.GetComponentsInChildren<EventBinderBehaviour>())
+                    {
+                        builder.AppendLine(
+                            $"\t\t\t{{ nameof({behaviour.EventName}), new KeyValuePair<Type, Type>(typeof(UI{windowSetting.WindowName}WindowComponent), typeof({behaviour.EventName})) }},");
+                    }
+                }
+            }
+            
+            CodeSnippetSettings options = CodeSnippetSettings.Load();
+            options.Build("CodeSnippet/UIEventSystem", new Dictionary<string, string>()
+                {
+                    { "Map", builder.ToString() }
+                }, $"{this.SettingsFolderPath}/UIEventSystemUnityListener.cs");
         }
 
         [BoxGroup("设置", centerLabel: true)]

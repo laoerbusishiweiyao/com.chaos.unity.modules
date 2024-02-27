@@ -192,7 +192,7 @@ using UnityEngine;
 namespace ET.Client
 {
     [Code]
-    public sealed class UIConfigCategory : Singleton<UIConfigCategory>
+    public sealed class UIConfigCategory : Singleton<UIConfigCategory>, ISingletonAwake
     {
         private readonly Dictionary<Type, UIWindowConfig> configs = new()
         {
@@ -207,6 +207,10 @@ $Data$
         public UIWidgetConfig Config<TUIWindow, TUIWidget>() where TUIWindow : IUIWindow where TUIWidget : IUIWidget
         {
             return this.configs[typeof(TUIWindow)].Widgets[typeof(TUIWidget)];
+        }
+
+        public void Awake()
+        {
         }
     }
 }"
@@ -307,15 +311,52 @@ $Properties$
 
 namespace ET.Client
 {
-    public struct UIOpenWindowEventArgs
+    public struct UIOpenEventArgs
     {
     }
 
-    public struct UICloseWindowEventArgs
+    public struct UICloseEventArgs
     {
     }
 
 $EventType$
+}"
+            },
+            {
+                "CodeSnippet/UIEventSystem", @"using System;
+using System.Collections.Generic;
+
+namespace ET.Client
+{
+    public sealed partial class UIEventSystem
+    {
+        private readonly Dictionary<string, KeyValuePair<Type, Type>> unityEventTable = new()
+        {
+$Map$
+        };
+
+        public void OnEvent(UIComponent uiComponent, string eventName, Dictionary<string, string> extraDatas)
+        {
+            if (!this.unityEventTable.TryGetValue(eventName, out var pair) || !this.allUIEvents.TryGetValue(pair.Key, out var uiHandlers) ||
+                !uiHandlers.TryGetValue(pair.Value, out var handlers))
+            {
+                return;
+            }
+
+            foreach (IUIEvent ui in handlers)
+            {
+                if (ui is not IUIEventHandler handler)
+                {
+                    Log.Error($""event error: {ui.EventArgsType.FullName}"");
+                    continue;
+                }
+
+                Entity entity = uiComponent.GetComponent(pair.Key);
+                object args = Activator.CreateInstance(pair.Value);
+                handler.Handle(entity, args, extraDatas).Coroutine();
+            }
+        }
+    }
 }"
             },
         };

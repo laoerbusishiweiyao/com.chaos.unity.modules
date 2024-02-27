@@ -25,7 +25,7 @@ namespace UnityEditor
         [GUIColor(0.4f, 0.8f, 1)]
         public void Build()
         {
-            // this.BuildWindow();
+            this.BuildWindow();
             this.BuildEvent();
 
             AssetDatabase.SaveAssets();
@@ -311,27 +311,13 @@ namespace UnityEditor
                     builder.AppendLine($"\tpublic struct {behaviour.EventName}");
                     builder.AppendLine("\t{");
 
-                    foreach ((string type, string name) in behaviour.Parameters)
+                    if (behaviour.Parameters.Count > 0)
                     {
-                        builder.AppendLine($"\t\tpublic {type} {name};");
+                        foreach ((string type, string name) in behaviour.Parameters)
+                        {
+                            builder.AppendLine($"\t\tpublic {type} {name};");
+                        }
                     }
-
-                    builder.AppendLine($"\t\tpublic {behaviour.EventName}()");
-                    builder.AppendLine("\t\t{");
-                    builder.AppendLine("\t\t}");
-
-                    builder.AppendLine();
-
-                    builder.AppendLine($"\t\tpublic {behaviour.EventName}(Dictionary<string, string> defaultValues)");
-                    builder.AppendLine("\t\t{");
-
-                    foreach ((string type, string name) in behaviour.Parameters)
-                    {
-                        builder.AppendLine($"\t\t\tthis.{name} = defaultValues.{this.BuildEvent(type, name)}");
-                        builder.AppendLine();
-                    }
-
-                    builder.AppendLine("\t\t}");
 
                     builder.AppendLine("\t}");
                 }
@@ -353,24 +339,6 @@ namespace UnityEditor
                         {
                             builder.AppendLine($"\t\tpublic {type} {name};");
                         }
-
-                        builder.AppendLine($"\t\tpublic {behaviour.EventName}()");
-                        builder.AppendLine("\t\t{");
-                        builder.AppendLine("\t\t}");
-
-                        builder.AppendLine();
-
-                        builder.AppendLine(
-                            $"\t\tpublic {behaviour.EventName}(Dictionary<string, string> defaultValues)");
-                        builder.AppendLine("\t\t{");
-
-                        foreach ((string type, string name) in behaviour.Parameters)
-                        {
-                            builder.AppendLine($"\t\t\tthis.{name} = defaultValues.{this.BuildEvent(type, name)}");
-                            builder.AppendLine();
-                        }
-
-                        builder.AppendLine("\t\t}");
                     }
 
                     builder.AppendLine("\t}");
@@ -382,19 +350,6 @@ namespace UnityEditor
                 {
                     { "EventType", builder.ToString() }
                 }, $"{toolSettings.SettingsFolderPath}/UIEventType.cs");
-        }
-
-        private string BuildEvent(string type, string name)
-        {
-            return type switch
-            {
-                "string" => $"GetValueOrDefault(nameof(this.{name}));",
-                "int" =>
-                    $".TryGetValue(nameof(this.{name}), out string {name.ToLower()[0]}{name[1..]}) ? int.Parse({name.ToLower()[0]}{name[1..]}) : default;",
-                "long" =>
-                    $".TryGetValue(nameof(this.{name}), out string {name.ToLower()[0]}{name[1..]}) ? long.Parse({name.ToLower()[0]}{name[1..]}) : default;",
-                _ => "default",
-            };
         }
     }
 }
