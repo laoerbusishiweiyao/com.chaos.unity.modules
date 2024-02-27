@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 
 namespace UnityEngine
 {
@@ -14,7 +15,10 @@ namespace UnityEngine
         /// 数据上下文关联数据类型
         /// </summary>
         public readonly List<Type> DataTypes = new()
-            { typeof(int), typeof(float), typeof(long), typeof(bool), typeof(string), };
+        {
+            typeof(int), typeof(float), typeof(long), typeof(bool), typeof(string),
+            typeof(List<TMP_Dropdown.OptionData>)
+        };
 
         private readonly List<Type> dataContextTypes = new();
 

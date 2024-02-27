@@ -41,7 +41,7 @@ namespace UnityEngine
 
             if (this.binders[path].Contains(behaviour))
             {
-                Debug.LogError($"重复绑定 {path} - {behaviour}");
+                // Debug.LogError($"重复绑定 {path} - {behaviour}");
                 return;
             }
 
@@ -122,7 +122,7 @@ namespace UnityEngine
 
                     if (this.binders[path].Contains(behaviour))
                     {
-                        Debug.LogError($"重复绑定 {path} - {behaviour}");
+                        // Debug.LogError($"重复绑定 {path} - {behaviour}");
                         return;
                     }
 
@@ -165,7 +165,7 @@ namespace UnityEngine
         {
             if (!this.binders.TryGetValue(eventArgs.Path, out List<DataBinderBehaviour> behaviours))
             {
-                Debug.LogError($"数据{eventArgs.Path}未关联绑定组件");
+                // Debug.LogError($"数据{eventArgs.Path}未关联绑定组件");
                 return;
             }
 

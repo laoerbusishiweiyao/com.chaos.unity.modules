@@ -23,8 +23,8 @@ namespace UnityEngine
         [PropertySpace]
         [OdinSerialize]
         [LabelText("绑定数据")]
-        [DictionaryDrawerSettings(KeyLabel = "数据路径", ValueLabel = "数据内容", IsReadOnly = false,
-            DisplayMode = DictionaryDisplayOptions.CollapsedFoldout)]
+        [DictionaryDrawerSettings(KeyLabel = "数据路径", ValueLabel = "数据内容", IsReadOnly = true,
+            DisplayMode = DictionaryDisplayOptions.OneLine)]
         protected Dictionary<string, DataBinder> binders = new();
 
         public IReadOnlyDictionary<string, DataBinder> Binders => this.binders;

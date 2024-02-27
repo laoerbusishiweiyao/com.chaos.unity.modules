@@ -14,5 +14,16 @@ namespace UnityEditor
 
             Selection.activeGameObject.AddComponent<PointerClickEventBinder>();
         }
+        
+        [MenuItem("GameObject/EventBinding/TapClickEventBinder", false, -1)]
+        private static void AddTapClickEventBinder()
+        {
+            if (Selection.activeGameObject is null)
+            {
+                return;
+            }
+
+            Selection.activeGameObject.AddComponent<TapClickEventBinder>();
+        }
     }
 }

@@ -30,7 +30,9 @@ namespace UnityEngine
         /// <summary>
         /// 基础数据路径 - 用于拼接属性路径
         /// </summary>
-        [SerializeField] [ReadOnly] private string baseDataContextPath;
+        [SerializeField]
+        [ReadOnly]
+        private string baseDataContextPath;
 
         /// <summary>
         /// 数据上下文类型全称 - 用于添加访问器
@@ -50,9 +52,6 @@ namespace UnityEngine
         private DataContext()
         {
             this.contextTypeFullName = this.GetType().FullName;
-
-            BuildAllTypeAccessor();
-            BuildAllTypeMutator();
         }
 
         public static void Build()
@@ -69,11 +68,6 @@ namespace UnityEngine
         /// </summary>
         private static void BuildAllTypeAccessor()
         {
-            if (Accessors.Count != 0)
-            {
-                return;
-            }
-
             foreach (Type type in DataContextOptions.Default.DataContextTypes)
             {
                 Dictionary<string, Dictionary<string, Func<DataContext, object>>> valueAccessors = new();
@@ -103,11 +97,6 @@ namespace UnityEngine
         /// </summary>
         private static void BuildAllTypeMutator()
         {
-            if (Mutators.Count != 0)
-            {
-                return;
-            }
-
             foreach (Type type in DataContextOptions.Default.DataContextTypes)
             {
                 Dictionary<string, Dictionary<string, Action<DataContext, object>>> valueMutators = new();

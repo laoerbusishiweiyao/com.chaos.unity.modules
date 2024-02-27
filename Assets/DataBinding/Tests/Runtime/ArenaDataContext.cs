@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using TMPro;
 
 namespace UnityEngine
 {
@@ -47,6 +49,23 @@ namespace UnityEngine
             this.OnDataContextChanged(nameof(this.Street));
         }
 
+        [HideReferenceObjectPicker]
+        [SerializeField]
+        [OnValueChanged(nameof(OnRivalNamesChanged))]
+        [Delayed]
+        private List<TMP_Dropdown.OptionData> rivalNames = new();
+
+        public List<TMP_Dropdown.OptionData> RivalNames
+        {
+            get => this.rivalNames;
+            set => this.SetField(ref this.rivalNames, value);
+        }
+
+        private void OnRivalNamesChanged()
+        {
+            this.OnDataContextChanged(nameof(this.RivalNames));
+        }
+
         [SerializeField]
         [OnValueChanged(nameof(OnTestSchoolChanged))]
         [Delayed]
@@ -80,6 +99,23 @@ namespace UnityEngine
         private void OnCityChanged()
         {
             this.OnDataContextChanged(nameof(this.City));
+        }
+        
+        
+        [SerializeField]
+        [OnValueChanged(nameof(OnEnableGraphicChanged))]
+        [Delayed]
+        private bool enableGraphic;
+
+       public bool EnableGraphic
+        {
+            get => this.enableGraphic;
+            set { this.SetField(ref this.enableGraphic, value); }
+        }
+
+        private void OnEnableGraphicChanged()
+        {
+            this.OnDataContextChanged(nameof(this.EnableGraphic));
         }
 
         [SerializeField]
