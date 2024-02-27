@@ -67,6 +67,16 @@ namespace UnityEngine
             {
                 return this.dataSource.DataContext.GetValue<int>(binder.Source).ToString(this.Precision);
             }
+            
+            if (binder.DataType == typeof(long))
+            {
+                return this.dataSource.DataContext.GetValue<long>(binder.Source).ToString(this.Precision);
+            }
+            
+            if (binder.DataType == typeof(float))
+            {
+                return this.dataSource.DataContext.GetValue<float>(binder.Source).ToString(this.Precision);
+            }
 
             if (binder.DataType == typeof(bool))
             {

@@ -6,12 +6,16 @@ namespace UnityEngine
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(TMP_InputField))]
-    [AddComponentMenu("DataBinding/TextTMPBinder")]
+    [AddComponentMenu("DataBinding/TextTMPInputBinder")]
     public sealed class TextTMPInputBinder : DataBinderBehaviour
     {
-        [Delayed] [LabelText("数字精度")] public string Precision;
+        [Delayed]
+        [LabelText("数字精度")]
+        public string Precision;
 
-        [LabelText("目标")] [ReadOnly] public TMP_InputField Target;
+        [LabelText("目标")]
+        [ReadOnly]
+        public TMP_InputField Target;
 
         public override void Refresh()
         {
@@ -40,6 +44,16 @@ namespace UnityEngine
             if (binder.DataType == typeof(int))
             {
                 return this.dataSource.DataContext.GetValue<int>(binder.Source).ToString(this.Precision);
+            }
+
+            if (binder.DataType == typeof(float))
+            {
+                return this.dataSource.DataContext.GetValue<float>(binder.Source).ToString(this.Precision);
+            }
+
+            if (binder.DataType == typeof(long))
+            {
+                return this.dataSource.DataContext.GetValue<long>(binder.Source).ToString(this.Precision);
             }
 
             if (binder.DataType == typeof(bool))
@@ -71,7 +85,31 @@ namespace UnityEngine
                 return;
             }
 
-            this.dataSource.DataContext.SetValue(this.FirstDataBinder().Source, value);
+            DataBinder binder = this.FirstDataBinder();
+            if (binder.DataType == typeof(string))
+            {
+                this.dataSource.DataContext.SetValue(binder.Source, value);
+            }
+
+            if (binder.DataType == typeof(int))
+            {
+                this.dataSource.DataContext.SetValue(binder.Source, int.Parse(value));
+            }
+
+            if (binder.DataType == typeof(float))
+            {
+                this.dataSource.DataContext.SetValue(binder.Source, float.Parse(value));
+            }
+
+            if (binder.DataType == typeof(long))
+            {
+                this.dataSource.DataContext.SetValue(binder.Source, long.Parse(value));
+            }
+
+            if (binder.DataType == typeof(bool))
+            {
+                this.dataSource.DataContext.SetValue(binder.Source, bool.Parse(value));
+            }
         }
 
         [OnInspectorGUI]
