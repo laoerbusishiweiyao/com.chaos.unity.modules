@@ -31,6 +31,7 @@ namespace UnityEngine
             this.Target.onValueChanged.RemoveListener(this.OnValueChanged);
             
             this.Target.value = this.GetValue(this.FirstDataBinder());
+            this.Target.RefreshShownValue();
             
             this.Target.onValueChanged.AddListener(this.OnValueChanged);
         }

@@ -370,18 +370,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9134784398cc4783afd64d2496eae55e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &911427406 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7559659444852228951, guid: c978331f67ec9254e8c32642c52ae5e2,
-    type: 3}
-  m_PrefabInstance: {fileID: 3800168670700784873}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc336594b3da42999583bb5de8bcb65f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &935507930
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,6 +636,160 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1032549600
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1032549601}
+  - component: {fileID: 1032549604}
+  - component: {fileID: 1032549603}
+  - component: {fileID: 1032549602}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1032549601
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1032549600}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1628097389}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1032549602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1032549600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f895e3feac445f4b61a9f58fd17b081, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: binders
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[UnityEngine.DataBinder,
+        Unity.DataBinding.Runtime]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Age
+    - Name: $v
+      Entry: 7
+      Data: 2|UnityEngine.DataBinder, Unity.DataBinding.Runtime
+    - Name: Source
+      Entry: 1
+      Data: Age
+    - Name: Mode
+      Entry: 3
+      Data: 0
+    - Name: Trigger
+      Entry: 3
+      Data: 0
+    - Name: DataType
+      Entry: 7
+      Data: 3|System.RuntimeType, mscorlib
+    - Name: 
+      Entry: 1
+      Data: System.Int32, mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  path: Age
+  CompareMode: 5
+  Value: 5
+  Target: {fileID: 1032549603}
+--- !u!114 &1032549603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1032549600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1032549604
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1032549600}
+  m_CullTransparentMesh: 1
 --- !u!1 &1110818609
 GameObject:
   m_ObjectHideFlags: 0
@@ -765,6 +907,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1176108342 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5648493774491014060, guid: 557530fbb2690354290010ac55925109,
+    type: 3}
+  m_PrefabInstance: {fileID: 1473450695}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7676b0de4bb542ec945fe8cc5490a4e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1473450695
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -912,6 +1066,26 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6501633298274548897, guid: 557530fbb2690354290010ac55925109,
         type: 3}
+    - target: {fileID: 6501633298274548897, guid: 557530fbb2690354290010ac55925109,
+        type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6501633298274548897, guid: 557530fbb2690354290010ac55925109,
+        type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[0]
+      value: '"path":"binders.{\"Address.School.Street\"}.[0]","value":$eref:0'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6501633298274548897, guid: 557530fbb2690354290010ac55925109,
+        type: 3}
+      propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6501633298274548897, guid: 557530fbb2690354290010ac55925109,
+        type: 3}
+      propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.data[0]
+      value: 
+      objectReference: {fileID: 1176108342}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -953,6 +1127,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2012742479}
+  - {fileID: 1032549601}
   m_Father: {fileID: 569827021}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -977,86 +1152,29 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 2012742481}
+    - {fileID: 1032549602}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
     - Name: DataContext
-      Entry: 7
-      Data: 0|UnityEngine.ArenaDataContext, Unity.DataBinding.Runtime.Test
-    - Name: baseDataContextPath
       Entry: 6
-      Data: 
-    - Name: name
-      Entry: 6
-      Data: 
-    - Name: age
-      Entry: 3
-      Data: 0
-    - Name: address
-      Entry: 7
-      Data: 1|UnityEngine.TestAddress, Unity.DataBinding.Runtime.Test
-    - Name: baseDataContextPath
-      Entry: 1
-      Data: Address
-    - Name: city
-      Entry: 6
-      Data: 
-    - Name: street
-      Entry: 6
-      Data: 
-    - Name: rivalNames
-      Entry: 7
-      Data: 2|System.Collections.Generic.List`1[[TMPro.TMP_Dropdown+OptionData, Unity.TextMeshPro]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: school
-      Entry: 7
-      Data: 3|UnityEngine.TestSchool, Unity.DataBinding.Runtime.Test
-    - Name: baseDataContextPath
-      Entry: 1
-      Data: School
-    - Name: city
-      Entry: 6
-      Data: 
-    - Name: enableGraphic
-      Entry: 5
-      Data: true
-    - Name: street
-      Entry: 6
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
       Data: 
     - Name: binders
       Entry: 7
-      Data: 4|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Collections.Generic.List`1[[UnityEngine.DataBinderBehaviour,
+      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Collections.Generic.List`1[[UnityEngine.DataBinderBehaviour,
         Unity.DataBinding.Runtime]], mscorlib]], mscorlib
     - Name: comparer
       Entry: 7
-      Data: 5|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+      Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
         mscorlib]], mscorlib
     - Name: 
       Entry: 8
       Data: 
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 2
     - Name: 
       Entry: 7
       Data: 
@@ -1065,7 +1183,7 @@ MonoBehaviour:
       Data: Address.School.EnableGraphic
     - Name: $v
       Entry: 7
-      Data: 6|System.Collections.Generic.List`1[[UnityEngine.DataBinderBehaviour,
+      Data: 2|System.Collections.Generic.List`1[[UnityEngine.DataBinderBehaviour,
         Unity.DataBinding.Runtime]], mscorlib
     - Name: 
       Entry: 12
@@ -1083,11 +1201,48 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Age
+    - Name: $v
+      Entry: 7
+      Data: 3|System.Collections.Generic.List`1[[UnityEngine.DataBinderBehaviour,
+        Unity.DataBinding.Runtime]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 10
+      Data: 1
+    - Name: 
       Entry: 13
       Data: 
     - Name: 
       Entry: 8
       Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+--- !u!114 &1808455776 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1530366939267955727, guid: c978331f67ec9254e8c32642c52ae5e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 3800168670700784873}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7676b0de4bb542ec945fe8cc5490a4e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2012742478
 GameObject:
   m_ObjectHideFlags: 0
@@ -1484,7 +1639,7 @@ PrefabInstance:
     - target: {fileID: 361796548821029305, guid: c978331f67ec9254e8c32642c52ae5e2,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1530366939267955727, guid: c978331f67ec9254e8c32642c52ae5e2,
         type: 3}
@@ -1517,7 +1672,7 @@ PrefabInstance:
         type: 3}
       propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.data[0]
       value: 
-      objectReference: {fileID: 911427406}
+      objectReference: {fileID: 1808455776}
     - target: {fileID: 1784987325441595893, guid: c978331f67ec9254e8c32642c52ae5e2,
         type: 3}
       propertyPath: m_Name

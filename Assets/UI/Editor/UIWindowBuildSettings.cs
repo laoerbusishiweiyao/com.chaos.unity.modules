@@ -132,6 +132,8 @@ namespace UnityEditor
                 UIWidgetEditorSettings editorSettings = widget.GetComponent<UIWidgetEditorSettings>();
                 this.Copy(editorSettings, options);
 
+                UnityEngine.Object.DestroyImmediate(widget.GetComponent("DataSource"));
+
                 PrefabUtility.SaveAsPrefabAsset(widget, outputPath);
                 UnityEngine.Object.DestroyImmediate(widget);
             }
@@ -160,6 +162,8 @@ namespace UnityEditor
                 UIWidgetOptions options = widget.AddComponent<UIWidgetOptions>();
                 UIWidgetEditorSettings editorSettings = widget.GetComponent<UIWidgetEditorSettings>();
                 this.Copy(editorSettings, options);
+
+                UnityEngine.Object.DestroyImmediate(widget.GetComponent("DataSource"));
 
                 PrefabUtility.SaveAsPrefabAsset(widget, outputPath);
                 UnityEngine.Object.DestroyImmediate(widget);
@@ -301,6 +305,7 @@ namespace UnityEditor
 
             StringBuilder builder = new();
 
+            List<string> eventNames = new();
             foreach (string key in settings.AllWidget.Keys)
             {
                 string path = sourcePath.Replace("/Source/", "/Prefabs/")
@@ -308,6 +313,13 @@ namespace UnityEditor
                 GameObject gameObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                 foreach (EventBinderBehaviour behaviour in gameObject.GetComponentsInChildren<EventBinderBehaviour>())
                 {
+                    if (eventNames.Contains(behaviour.EventName))
+                    {
+                        continue;
+                    }
+
+                    eventNames.Add(behaviour.EventName);
+
                     builder.AppendLine($"\tpublic struct {behaviour.EventName}");
                     builder.AppendLine("\t{");
 
@@ -330,6 +342,13 @@ namespace UnityEditor
                 GameObject gameObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                 foreach (EventBinderBehaviour behaviour in gameObject.GetComponentsInChildren<EventBinderBehaviour>())
                 {
+                    if (eventNames.Contains(behaviour.EventName))
+                    {
+                        continue;
+                    }
+
+                    eventNames.Add(behaviour.EventName);
+
                     builder.AppendLine($"\tpublic struct {behaviour.EventName}");
                     builder.AppendLine("\t{");
 

@@ -7,7 +7,12 @@ namespace UnityEngine
 {
     public abstract partial class DataBinderBehaviour
     {
-        [PropertySpace] [SerializeField] [ValueDropdown(nameof(SourcePaths))] [LabelText("路径")] [PropertyOrder(-3)]
+        [PropertySpace]
+        [SerializeField]
+        [ValueDropdown(nameof(SourcePaths))]
+        [LabelText("路径")]
+        [PropertyOrder(-3)]
+        [DisableInPlayMode]
         private string path = string.Empty;
 
         [ButtonGroup("操作面板", -2)]

@@ -459,6 +459,12 @@ namespace UnityEditor
             options.WidgetParent = control.GetComponent<RectTransform>();
             options.PopupParent = popup.GetComponent<RectTransform>();
 
+            int layer = LayerMask.NameToLayer("UI");
+            foreach (Transform transform in window.GetComponentsInChildren<Transform>())
+            {
+                transform.gameObject.layer = layer;
+            }
+
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(window, path);
             DestroyImmediate(window);
 

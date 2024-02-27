@@ -30,6 +30,7 @@ namespace UnityEngine
 
             this.Target.options.Clear();
             this.Target.AddOptions(this.GetValue(this.FirstDataBinder()));
+            this.Target.RefreshShownValue();
         }
 
         private List<TMP_Dropdown.OptionData> GetValue(DataBinder binder)

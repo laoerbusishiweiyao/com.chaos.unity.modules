@@ -270,6 +270,7 @@ using Sirenix.OdinInspector;
 
 namespace ET.Client
 {
+    [HideReferenceObjectPicker]
     [EnableClass]
     public sealed partial class $Name$DataContext : DataContext
     {

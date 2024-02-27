@@ -86,26 +86,35 @@ namespace UnityEngine
 
         public void Refresh()
         {
-            List<DataBinderBehaviour> behaviours = new();
-            foreach (List<DataBinderBehaviour> components in this.binders.Values)
             {
-                foreach (DataBinderBehaviour behaviour in components)
+                foreach (List<DataBinderBehaviour> behaviours in this.binders.Values)
                 {
-                    if (behaviours.Contains(behaviour))
-                    {
-                        continue;
-                    }
-
-                    behaviours.Add(behaviour);
+                    behaviours.RemoveAll(behaviour => behaviour is null);
                 }
             }
 
-            foreach (DataBinderBehaviour behaviour in behaviours)
             {
-                behaviour.Initialize();
-                behaviour.Unbind();
-                behaviour.Bind();
-                behaviour.Refresh();
+                List<DataBinderBehaviour> behaviours = new();
+                foreach (List<DataBinderBehaviour> components in this.binders.Values)
+                {
+                    foreach (DataBinderBehaviour behaviour in components)
+                    {
+                        if (behaviours.Contains(behaviour))
+                        {
+                            continue;
+                        }
+
+                        behaviours.Add(behaviour);
+                    }
+                }
+
+                foreach (DataBinderBehaviour behaviour in behaviours)
+                {
+                    behaviour.Initialize();
+                    behaviour.Unbind();
+                    behaviour.Bind();
+                    behaviour.Refresh();
+                }
             }
         }
 
@@ -154,7 +163,7 @@ namespace UnityEngine
                     behaviours.Add(behaviour);
                 }
             }
-            
+
             foreach (DataBinderBehaviour behaviour in behaviours)
             {
                 behaviour.Refresh();

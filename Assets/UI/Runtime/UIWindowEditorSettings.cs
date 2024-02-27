@@ -102,10 +102,12 @@ namespace UnityEngine
                 Directory.CreateDirectory(directory);
             }
 
+            int layer = LayerMask.NameToLayer("UI");
             GameObject locator = this.PopupParent.gameObject.Child(this.InputName) ??
                                  new GameObject(this.InputName, typeof(RectTransform));
             locator.transform.SetParent(this.PopupParent);
             locator.GetComponent<RectTransform>().SetFullScreen();
+            locator.layer = layer;
 
             GameObject widget = new(name, typeof(RectTransform), typeof(UIWidgetEditorSettings));
             widget.transform.SetParent(locator.transform);
@@ -119,6 +121,12 @@ namespace UnityEngine
             UIWidgetEditorSettings options = widget.GetComponent<UIWidgetEditorSettings>();
             options.WidgetName = this.InputName;
             options.Type = UIWidgetType.Popup;
+
+            foreach (Transform child in widget.GetComponentsInChildren<Transform>())
+            {
+                transform.gameObject.layer = layer;
+            }
+            widget.layer = layer;
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(widget, path);
             DestroyImmediate(widget);
@@ -166,10 +174,13 @@ namespace UnityEngine
                 Directory.CreateDirectory(directory);
             }
 
+            int layer = LayerMask.NameToLayer("UI");
+
             GameObject locator = this.WidgetParent.gameObject.Child(this.InputName) ??
                                  new GameObject(this.InputName, typeof(RectTransform));
             locator.transform.SetParent(this.WidgetParent);
             locator.GetComponent<RectTransform>().SetFullScreen();
+            locator.layer = layer;
 
             GameObject widget = new(name, typeof(RectTransform), typeof(UIWidgetEditorSettings));
             widget.transform.SetParent(locator.transform);
@@ -179,6 +190,12 @@ namespace UnityEngine
             UIWidgetEditorSettings options = widget.GetComponent<UIWidgetEditorSettings>();
             options.WidgetName = this.InputName;
             options.Type = UIWidgetType.Default;
+
+            foreach (Transform child in widget.GetComponentsInChildren<Transform>())
+            {
+                transform.gameObject.layer = layer;
+            }
+            widget.layer = layer;
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(widget, path);
             DestroyImmediate(widget);

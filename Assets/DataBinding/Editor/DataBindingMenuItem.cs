@@ -70,6 +70,17 @@ namespace UnityEditor
 
             Selection.activeGameObject.AddComponent<GraphicEnableBinder>();
         }
+        
+        [MenuItem("GameObject/DataBinding/GraphicEnableCompareBinder", false, -1)]
+        private static void AddGraphicEnableCompareBinder()
+        {
+            if (Selection.activeGameObject is null)
+            {
+                return;
+            }
+
+            Selection.activeGameObject.AddComponent<GraphicEnableCompareBinder>();
+        }
 
         static DataBindingMenuItem()
         {

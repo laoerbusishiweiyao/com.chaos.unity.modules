@@ -5,21 +5,21 @@ using TMPro;
 
 namespace UnityEngine
 {
-    public sealed partial class TestAddress : DataContext
+    public sealed partial class EditorTestAddress : DataContext
     {
         [SerializeField]
         [OnValueChanged(nameof(OnCityChanged))]
         [Delayed]
         private string city;
 
-        public TestAddress()
+        public EditorTestAddress()
         {
-            this.school = new TestSchool(nameof(School));
+            this.school = new EditorTestSchool(nameof(School));
         }
 
-        public TestAddress(string baseDataContextPath = null) : base(baseDataContextPath)
+        public EditorTestAddress(string baseDataContextPath = null) : base(baseDataContextPath)
         {
-            this.school = new TestSchool(nameof(School));
+            this.school = new EditorTestSchool(nameof(School));
         }
 
         public string City
@@ -69,9 +69,9 @@ namespace UnityEngine
         [SerializeField]
         [OnValueChanged(nameof(OnTestSchoolChanged))]
         [Delayed]
-        private TestSchool school;
+        private EditorTestSchool school;
 
-        public TestSchool School
+        public EditorTestSchool School
         {
             get => this.school;
             set { this.SetField(ref this.school, value); }
@@ -83,7 +83,7 @@ namespace UnityEngine
         }
     }
 
-    public sealed partial class TestSchool : DataContext
+    public sealed partial class EditorTestSchool : DataContext
     {
         [SerializeField]
         [OnValueChanged(nameof(OnCityChanged))]
@@ -123,7 +123,7 @@ namespace UnityEngine
         [Delayed]
         private string street;
 
-        public TestSchool(string baseDataContextPath = null) : base(baseDataContextPath)
+        public EditorTestSchool(string baseDataContextPath = null) : base(baseDataContextPath)
         {
         }
 
@@ -139,7 +139,7 @@ namespace UnityEngine
         }
     }
 
-    public sealed class ArenaDataContext : DataContext
+    public sealed class EditorTestDataContext : DataContext
     {
         [SerializeField]
         [OnValueChanged(nameof(OnNameChanged))]
@@ -176,9 +176,9 @@ namespace UnityEngine
         [SerializeField]
         [OnValueChanged(nameof(OnAddressChanged))]
         [Delayed]
-        private TestAddress address = new TestAddress(nameof(Address));
+        private EditorTestAddress address = new EditorTestAddress(nameof(Address));
 
-        public TestAddress Address
+        public EditorTestAddress Address
         {
             get => this.address;
             set { this.SetField(ref this.address, value); }
