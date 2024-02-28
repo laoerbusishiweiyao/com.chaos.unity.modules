@@ -67,6 +67,39 @@ namespace UnityEngine
         }
 
         [SerializeField]
+        [OnValueChanged(nameof(OnToggleGroupOptionsChanged))]
+        [Delayed]
+        private List<string> toggleGroupOptions = new();
+
+        public List<string> ToggleGroupOptions
+        {
+            get => this.toggleGroupOptions;
+            set { this.SetField(ref this.toggleGroupOptions, value); }
+        }
+
+        private void OnToggleGroupOptionsChanged()
+        {
+            this.OnDataContextChanged(nameof(this.ToggleGroupOptions));
+        }
+
+        [SerializeField]
+        [OnValueChanged(nameof(OnToggleGroupValueChanged))]
+        [Delayed]
+        private int toggleGroupValue = -1;
+
+        public int ToggleGroupValue
+        {
+            get => this.toggleGroupValue;
+            set { this.SetField(ref this.toggleGroupValue, value); }
+        }
+
+        private void OnToggleGroupValueChanged()
+        {
+            this.OnDataContextChanged(nameof(this.ToggleGroupValue));
+        }
+
+
+        [SerializeField]
         [OnValueChanged(nameof(OnTestSchoolChanged))]
         [Delayed]
         private EditorTestSchool school;
@@ -100,14 +133,14 @@ namespace UnityEngine
         {
             this.OnDataContextChanged(nameof(this.City));
         }
-        
-        
+
+
         [SerializeField]
         [OnValueChanged(nameof(OnEnableGraphicChanged))]
         [Delayed]
         private bool enableGraphic;
 
-       public bool EnableGraphic
+        public bool EnableGraphic
         {
             get => this.enableGraphic;
             set { this.SetField(ref this.enableGraphic, value); }

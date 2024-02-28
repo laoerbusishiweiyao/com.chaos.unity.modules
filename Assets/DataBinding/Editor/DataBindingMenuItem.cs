@@ -71,7 +71,18 @@ namespace UnityEditor
             Selection.activeGameObject.AddComponent<DropdownTMPOptionsBinder>();
         }
 
-        [MenuItem("GameObject/DataBinding/GraphicEnableBinder", false, 5)]
+        [MenuItem("GameObject/DataBinding/ToggleGroupBinder", false, 5)]
+        private static void AddToggleGroupBinder()
+        {
+            if (Selection.activeGameObject is null)
+            {
+                return;
+            }
+
+            Selection.activeGameObject.AddComponent<ToggleGroupBinder>();
+        }
+
+        [MenuItem("GameObject/DataBinding/GraphicEnableBinder", false, 6)]
         private static void AddGraphicEnableBinder()
         {
             if (Selection.activeGameObject is null)
@@ -82,7 +93,7 @@ namespace UnityEditor
             Selection.activeGameObject.AddComponent<GraphicEnableBinder>();
         }
 
-        [MenuItem("GameObject/DataBinding/GraphicEnableCompareBinder", false, 6)]
+        [MenuItem("GameObject/DataBinding/GraphicEnableCompareBinder", false, 7)]
         private static void AddGraphicEnableCompareBinder()
         {
             if (Selection.activeGameObject is null)

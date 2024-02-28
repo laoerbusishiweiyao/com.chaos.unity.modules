@@ -17,7 +17,8 @@ namespace UnityEngine
         public readonly List<Type> DataTypes = new()
         {
             typeof(int), typeof(float), typeof(long), typeof(bool), typeof(string),
-            typeof(List<TMP_Dropdown.OptionData>)
+            typeof(List<string>),
+            typeof(List<TMP_Dropdown.OptionData>),
         };
 
         private readonly List<Type> dataContextTypes = new();
