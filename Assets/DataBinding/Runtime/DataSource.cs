@@ -170,6 +170,22 @@ namespace UnityEngine
             }
         }
 
+        public void InitializeAllInactiveBinder(GameObject target)
+        {
+            foreach (DataBinderBehaviour behaviour in target.GetComponentsInChildren<DataBinderBehaviour>(true))
+            {
+                if (behaviour.gameObject.activeInHierarchy)
+                {
+                    continue;
+                }
+
+                behaviour.Initialize();
+                behaviour.Unbind();
+                behaviour.Bind();
+                behaviour.Refresh();
+            }
+        }
+
         private void OnDataContextChanged(object sender, DataContextChangedEventArgs eventArgs)
         {
             if (!this.binders.TryGetValue(eventArgs.Path, out List<DataBinderBehaviour> behaviours))
@@ -178,8 +194,9 @@ namespace UnityEngine
                 return;
             }
 
-            foreach (DataBinderBehaviour behaviour in behaviours)
+            for (int i = 0; i < behaviours.Count; i++)
             {
+                var behaviour = behaviours[i];
                 behaviour.Refresh();
             }
         }

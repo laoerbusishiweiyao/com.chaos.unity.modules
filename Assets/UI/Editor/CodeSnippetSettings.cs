@@ -318,6 +318,7 @@ $EventType$
             {
                 "CodeSnippet/UIEventSystem", @"using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace ET.Client
 {
@@ -328,7 +329,7 @@ namespace ET.Client
 $Map$
         };
 
-        public void OnEvent(UIComponent uiComponent, string eventName, Dictionary<string, string> extraDatas)
+        public void OnEvent(UIComponent uiComponent, EventBinderBehaviour sender, string eventName)
         {
             if (!this.unityEventTable.TryGetValue(eventName, out var pair) || !this.allUIEvents.TryGetValue(pair.Key, out var uiHandlers) ||
                 !uiHandlers.TryGetValue(pair.Value, out var handlers))
@@ -346,7 +347,7 @@ $Map$
 
                 Entity entity = uiComponent.GetComponent(pair.Key);
                 object args = Activator.CreateInstance(pair.Value);
-                handler.Handle(entity, args, extraDatas).Coroutine();
+                handler.Handle(entity, sender, args).Coroutine();
             }
         }
     }
