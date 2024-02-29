@@ -26,7 +26,10 @@ namespace UnityEditor
         public void Build()
         {
             this.BuildWindow();
+            Debug.Log($"{this.WindowName} UI预制生成完毕");
+
             this.BuildEvent();
+            Debug.Log($"{this.WindowName} UI事件生成完毕");
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -311,7 +314,8 @@ namespace UnityEditor
                 string path = sourcePath.Replace("/Source/", "/Prefabs/")
                     .Replace("Source.prefab", $"Widget{key}.prefab");
                 GameObject gameObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                foreach (EventBinderBehaviour behaviour in gameObject.GetComponentsInChildren<EventBinderBehaviour>())
+                foreach (EventBinderBehaviour behaviour in
+                         gameObject.GetComponentsInChildren<EventBinderBehaviour>(true))
                 {
                     if (eventNames.Contains(behaviour.EventName))
                     {
@@ -340,7 +344,8 @@ namespace UnityEditor
                 string path = sourcePath.Replace("/Source/", "/Prefabs/")
                     .Replace("Source.prefab", $"Popup{key}.prefab");
                 GameObject gameObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                foreach (EventBinderBehaviour behaviour in gameObject.GetComponentsInChildren<EventBinderBehaviour>())
+                foreach (EventBinderBehaviour behaviour in
+                         gameObject.GetComponentsInChildren<EventBinderBehaviour>(true))
                 {
                     if (eventNames.Contains(behaviour.EventName))
                     {
