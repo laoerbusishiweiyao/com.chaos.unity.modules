@@ -30,6 +30,11 @@ namespace UnityEditor
         {
             if (!pathCaches.ContainsKey(dataContextType))
             {
+                Cache();
+            }
+
+            if (!pathCaches.ContainsKey(dataContextType))
+            {
                 Debug.LogError($"类型 {dataContextType} 未缓存属性路径");
                 return default;
             }

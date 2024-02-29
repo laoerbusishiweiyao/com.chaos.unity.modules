@@ -28,7 +28,7 @@ namespace UnityEngine
 
         public override void Refresh()
         {
-            if (this.dataSource is null || this.dataSource.DataContext is null)
+            if (this.dataSource is null || this.dataSource.DataContext is null || this.Target is null)
             {
                 this.Clear();
                 return;
@@ -101,6 +101,11 @@ namespace UnityEngine
 
         private void Clear()
         {
+            if (!this)
+            {
+                return;
+            }
+
             var toggles = this.GetComponentsInChildren<Toggle>();
             foreach (Toggle toggle in toggles)
             {

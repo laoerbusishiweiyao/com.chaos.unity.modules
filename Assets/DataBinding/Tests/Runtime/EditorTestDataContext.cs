@@ -192,6 +192,23 @@ namespace UnityEngine
     public sealed class EditorTestDataContext : DataContext
     {
         [SerializeField]
+        [OnValueChanged(nameof(OnAnchoredPositionChanged))]
+        [Delayed]
+        private List<float> anchoredPosition = new();
+
+        public List<float> AnchoredPosition
+        {
+            get => this.anchoredPosition;
+            set { this.SetField(ref this.anchoredPosition, value); }
+        }
+
+        private void OnAnchoredPositionChanged()
+        {
+            this.OnDataContextChanged(nameof(this.AnchoredPosition));
+        }
+
+
+        [SerializeField]
         [OnValueChanged(nameof(OnNameChanged))]
         [Delayed]
         private string name;
@@ -237,6 +254,92 @@ namespace UnityEngine
         private void OnAddressChanged()
         {
             this.OnDataContextChanged(nameof(this.Address));
+        }
+    }
+
+    public sealed class TestCardDataContext : DataContext
+    {
+        [SerializeField]
+        [OnValueChanged(nameof(OnBackgroundChanged))]
+        [Delayed]
+        private string background;
+
+        public string Background
+        {
+            get => this.background;
+            set { this.SetField(ref this.background, value); }
+        }
+
+        private void OnBackgroundChanged()
+        {
+            this.OnDataContextChanged(nameof(this.Background));
+        }
+
+        [SerializeField]
+        [OnValueChanged(nameof(OnAvatarChanged))]
+        [Delayed]
+        private string avatar;
+
+        public string Avatar
+        {
+            get => this.avatar;
+            set { this.SetField(ref this.avatar, value); }
+        }
+
+        private void OnAvatarChanged()
+        {
+            this.OnDataContextChanged(nameof(this.Avatar));
+        }
+
+        [SerializeField]
+        [OnValueChanged(nameof(OnRuneChanged))]
+        [Delayed]
+        private string rune;
+
+        public string Rune
+        {
+            get => this.rune;
+            set { this.SetField(ref this.rune, value); }
+        }
+
+        private void OnRuneChanged()
+        {
+            this.OnDataContextChanged(nameof(this.Rune));
+        }
+
+        [SerializeField]
+        [OnValueChanged(nameof(OnCostChanged))]
+        [Delayed]
+        private int cost;
+
+        public int Cost
+        {
+            get => this.cost;
+            set { this.SetField(ref this.cost, value); }
+        }
+
+        private void OnCostChanged()
+        {
+            this.OnDataContextChanged(nameof(this.Cost));
+        }
+    }
+
+    public sealed class TestLoopScrollRectDataSource : DataContext
+    {
+        [SerializeField]
+        [OnValueChanged(nameof(OnCardRepositoryChanged))]
+        [Delayed]
+        private List<LoopScrollRectItem> cardRepository = new();
+
+        public List<LoopScrollRectItem> CardRepository
+        {
+            get => this.cardRepository;
+            set { this.SetField(ref this.cardRepository, value); }
+        }
+
+        private void OnCardRepositoryChanged()
+        {
+            this.OnDataContextChanged(nameof(this.CardRepository));
         }
     }
 }

@@ -281,6 +281,12 @@ namespace UnityEngine
             this.dataContextChanged?.Invoke(this, new DataContextChangedEventArgs(path));
         }
 
+        public void NotifyDataContextChanged(string propertyName)
+        {
+            string path = this.BuildPropertyPath(propertyName);
+            this.dataContextChanged?.Invoke(this, new DataContextChangedEventArgs(path));
+        }
+
         /// <summary>
         /// 数据上下文变化处理器 - 属性set时触发
         /// </summary>

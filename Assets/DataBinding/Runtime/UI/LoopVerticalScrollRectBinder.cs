@@ -30,7 +30,7 @@ namespace UnityEngine
 
         public override void Refresh()
         {
-            if (this.dataSource is null || this.dataSource.DataContext is null)
+            if (this.dataSource is null || this.dataSource.DataContext is null || this.Target is null)
             {
                 return;
             }
@@ -43,11 +43,7 @@ namespace UnityEngine
             this.items.Clear();
             this.items.AddRange(this.GetValue());
             this.Target.totalCount = this.items.Count;
-            this.Target.ClearCells();
-            if (this.items.Count > 0)
-            {
-                this.Target.RefillCells();
-            }
+            this.Target.RefillCells();
         }
 
         private List<LoopScrollRectItem> GetValue()
@@ -69,11 +65,7 @@ namespace UnityEngine
             this.Target.prefabSource = this;
             this.Target.dataSource = this;
             this.Target.totalCount = this.items.Count;
-            this.Target.ClearCells();
-            if (this.items.Count > 0)
-            {
-                this.Target.RefillCells();
-            }
+            this.Target.RefillCells();
         }
 
         public void ProvideData(Transform sd, int idx)

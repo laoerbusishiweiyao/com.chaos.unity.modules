@@ -18,6 +18,9 @@ namespace UnityEngine
         {
             typeof(int), typeof(float), typeof(long), typeof(bool), typeof(string),
             typeof(List<string>),
+            typeof(List<long>),
+            typeof(List<int>),
+            typeof(List<float>),
             typeof(List<TMP_Dropdown.OptionData>),
             typeof(List<LoopScrollRectItem>),
         };

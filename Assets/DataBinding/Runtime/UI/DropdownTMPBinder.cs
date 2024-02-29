@@ -22,7 +22,7 @@ namespace UnityEngine
 
         public override void Refresh()
         {
-            if (this.dataSource is null || this.dataSource.DataContext is null)
+            if (this.dataSource is null || this.dataSource.DataContext is null || this.Target is null)
             {
                 this.Target.value = 0;
                 return;
@@ -63,7 +63,7 @@ namespace UnityEngine
 
         private void OnValueChanged(int value)
         {
-            if (this.dataSource is null || this.dataSource.DataContext is null)
+            if (this.dataSource is null || this.dataSource.DataContext is null || this.Target is null)
             {
                 return;
             }

@@ -29,7 +29,7 @@ namespace UnityEngine
 
         public override void Refresh()
         {
-            if (this.dataSource is null || this.dataSource.DataContext is null)
+            if (this.dataSource is null || this.dataSource.DataContext is null || this.Target is null)
             {
                 this.Target.text = string.Empty;
                 return;
@@ -85,7 +85,7 @@ namespace UnityEngine
 
         private void UpdateSource(string value)
         {
-            if (this.dataSource is null || this.dataSource.DataContext is null)
+            if (this.dataSource is null || this.dataSource.DataContext is null || this.Target is null)
             {
                 return;
             }
