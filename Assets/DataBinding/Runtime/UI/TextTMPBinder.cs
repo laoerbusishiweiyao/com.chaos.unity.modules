@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TMPro;
 
@@ -9,6 +10,15 @@ namespace UnityEngine
     [AddComponentMenu("DataBinding/TextTMPBinder")]
     public sealed class TextTMPBinder : DataBinderBehaviour
     {
+        public override List<Type> PropertyTypes { get; } = new()
+        {
+            typeof(int),
+            typeof(string),
+            typeof(float),
+            typeof(long),
+            typeof(bool),
+        };
+        
         [PropertySpace] [Delayed] [TextArea(2, 10)] [LabelText("字符串填充形式")]
         public string Format;
 

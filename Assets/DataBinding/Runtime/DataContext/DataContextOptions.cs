@@ -19,6 +19,7 @@ namespace UnityEngine
             typeof(int), typeof(float), typeof(long), typeof(bool), typeof(string),
             typeof(List<string>),
             typeof(List<TMP_Dropdown.OptionData>),
+            typeof(List<LoopScrollRectItem>),
         };
 
         private readonly List<Type> dataContextTypes = new();

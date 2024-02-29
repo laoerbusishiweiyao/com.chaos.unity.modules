@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine.UI;
 
@@ -9,6 +10,14 @@ namespace UnityEngine
     [AddComponentMenu("DataBinding/GraphicEnableCompareBinder")]
     public sealed class GraphicEnableCompareBinder : DataBinderBehaviour
     {
+        public override List<Type> PropertyTypes { get; } = new()
+        {
+            typeof(bool),
+            typeof(long),
+            typeof(int),
+            typeof(float),
+        };
+        
         public UICompareMode CompareMode;
 
         [LabelText("目标值")]

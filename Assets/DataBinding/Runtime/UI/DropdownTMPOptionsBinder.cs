@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -10,6 +11,11 @@ namespace UnityEngine
     [AddComponentMenu("DataBinding/DropdownTMPOptionsBinder")]
     public sealed class DropdownTMPOptionsBinder : DataBinderBehaviour
     {
+        public override List<Type> PropertyTypes { get; } = new()
+        {
+            typeof(List<TMP_Dropdown.OptionData>),
+        };
+
         [LabelText("目标")]
         [ReadOnly]
         public TMP_Dropdown Target;

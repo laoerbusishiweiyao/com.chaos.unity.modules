@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine.UI;
 
@@ -8,6 +10,11 @@ namespace UnityEngine
     [AddComponentMenu("DataBinding/GraphicEnableBinder")]
     public sealed class GraphicEnableBinder : DataBinderBehaviour
     {
+        public override List<Type> PropertyTypes { get; } = new()
+        {
+            typeof(bool),
+        };
+        
         [LabelText("取反")]
         public bool Negation;
 

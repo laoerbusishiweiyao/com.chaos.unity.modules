@@ -11,6 +11,12 @@ namespace UnityEngine
     [AddComponentMenu("DataBinding/ToggleGroupBinder")]
     public sealed class ToggleGroupBinder : DataBinderBehaviour
     {
+        public override List<Type> PropertyTypes { get; } = new()
+        {
+            typeof(int),
+            typeof(List<string>),
+        };
+
         [LabelText("Toggle模板")]
         public GameObject Template;
 

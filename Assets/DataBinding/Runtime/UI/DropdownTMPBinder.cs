@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine.UI;
@@ -10,6 +11,11 @@ namespace UnityEngine
     [AddComponentMenu("DataBinding/DropdownTMPBinder")]
     public sealed class DropdownTMPBinder : DataBinderBehaviour
     {
+        public override List<Type> PropertyTypes { get; } = new()
+        {
+            typeof(int),
+        };
+
         [LabelText("目标")]
         [ReadOnly]
         public TMP_Dropdown Target;
@@ -29,10 +35,10 @@ namespace UnityEngine
             }
 
             this.Target.onValueChanged.RemoveListener(this.OnValueChanged);
-            
+
             this.Target.value = this.GetValue(this.FirstDataBinder());
             this.Target.RefreshShownValue();
-            
+
             this.Target.onValueChanged.AddListener(this.OnValueChanged);
         }
 

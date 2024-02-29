@@ -34,6 +34,23 @@ namespace UnityEngine
         }
 
         [SerializeField]
+        [OnValueChanged(nameof(OnLoopScrollRectItemsChanged))]
+        [Delayed]
+        private List<LoopScrollRectItem> loopScrollRectItems = new();
+
+        public List<LoopScrollRectItem> LoopScrollRectItems
+        {
+            get => this.loopScrollRectItems;
+            set { this.SetField(ref this.loopScrollRectItems, value); }
+        }
+
+        private void OnLoopScrollRectItemsChanged()
+        {
+            this.OnDataContextChanged(nameof(this.LoopScrollRectItems));
+        }
+
+
+        [SerializeField]
         [OnValueChanged(nameof(OnStreetChanged))]
         [Delayed]
         private string street;

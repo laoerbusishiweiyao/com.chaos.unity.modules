@@ -88,7 +88,7 @@ namespace UnityEngine
 
         private List<string> SourcePaths() => this.dataSource is null || this.dataSource.DataContext is null
             ? new List<string>()
-            : DataContextCache.FilterPropertyPath(this.dataSource.DataContextType);
+            : DataContextCache.FilterPropertyPath(this.dataSource.DataContextType, this.PropertyTypes);
 
         protected virtual void OnValidate()
         {

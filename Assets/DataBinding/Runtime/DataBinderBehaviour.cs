@@ -11,6 +11,8 @@ namespace UnityEngine
     [ExecuteAlways]
     public abstract partial class DataBinderBehaviour : SerializedMonoBehaviour
     {
+        public virtual List<Type> PropertyTypes { get; } = new();
+
         [BoxGroup("数据源", centerLabel: true)]
         [ShowInInspector]
         [HideLabel]
@@ -46,7 +48,7 @@ namespace UnityEngine
         {
             this.dataSource ??= this.GetComponentInParent<DataSource>();
         }
-        
+
         protected DataBinder FirstDataBinder()
         {
             foreach (DataBinder binder in this.binders.Values)

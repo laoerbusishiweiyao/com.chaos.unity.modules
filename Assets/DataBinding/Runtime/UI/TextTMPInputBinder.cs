@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TMPro;
 
@@ -9,6 +10,15 @@ namespace UnityEngine
     [AddComponentMenu("DataBinding/TextTMPInputBinder")]
     public sealed class TextTMPInputBinder : DataBinderBehaviour
     {
+        public override List<Type> PropertyTypes { get; } = new()
+        {
+            typeof(int),
+            typeof(string),
+            typeof(float),
+            typeof(long),
+            typeof(bool),
+        };
+        
         [Delayed]
         [LabelText("数字精度")]
         public string Precision;

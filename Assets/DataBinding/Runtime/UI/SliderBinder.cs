@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine.UI;
@@ -10,6 +11,13 @@ namespace UnityEngine
     [AddComponentMenu("DataBinding/SliderBinder")]
     public sealed class SliderBinder : DataBinderBehaviour
     {
+        public override List<Type> PropertyTypes { get; } = new()
+        {
+            typeof(int),
+            typeof(float),
+            typeof(long),
+        };
+        
         [LabelText("目标")]
         [ReadOnly]
         public Slider Target;

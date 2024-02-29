@@ -2,7 +2,8 @@
     "name": "Unity.DataBinding.Runtime",
     "rootNamespace": "UnityEngine",
     "references": [
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "LoopScrollRect.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

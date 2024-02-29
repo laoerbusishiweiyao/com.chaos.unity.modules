@@ -26,7 +26,7 @@ namespace UnityEditor
         /// </summary>
         /// <param name="dataContextType">数据上下文类型</param>
         /// <returns></returns>
-        public static List<string> FilterPropertyPath(Type dataContextType)
+        public static List<string> FilterPropertyPath(Type dataContextType, List<Type> propertyTypes)
         {
             if (!pathCaches.ContainsKey(dataContextType))
             {
@@ -34,7 +34,21 @@ namespace UnityEditor
                 return default;
             }
 
-            return pathCaches[dataContextType];
+            if (propertyTypes.Count == 0)
+            {
+                return pathCaches[dataContextType];
+            }
+
+            List<string> paths = new();
+            foreach (string path in pathCaches[dataContextType])
+            {
+                if (propertyTypes.Contains(PropertyType(dataContextType, path)))
+                {
+                    paths.Add(path);
+                }
+            }
+
+            return paths;
         }
 
         /// <summary>
