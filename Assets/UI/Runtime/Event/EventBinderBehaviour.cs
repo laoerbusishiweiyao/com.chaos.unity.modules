@@ -13,6 +13,12 @@ namespace UnityEngine
     {
         public static event Action<EventBinderBehaviour, string> EventHandler;
 
+        [LabelText("是否为异步任务")]
+        public bool IsTask;
+
+        [HideInInspector]
+        public bool IsTasking;
+
         [LabelText("事件名称")]
         public string EventName;
 
@@ -28,6 +34,11 @@ namespace UnityEngine
 
         protected void OnEvent()
         {
+            if (this.IsTask && this.IsTasking)
+            {
+                return;
+            }
+
             EventHandler?.Invoke(this, this.EventName);
         }
     }

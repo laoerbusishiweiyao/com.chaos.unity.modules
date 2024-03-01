@@ -350,6 +350,39 @@ $Map$
                 handler.Handle(entity, sender, args).Coroutine();
             }
         }
+
+        public async ETTask OnEventAsync(UIComponent uiComponent, EventBinderBehaviour sender, string eventName)
+        {
+            if (!this.unityEventTable.TryGetValue(eventName, out var pair) || !this.allUIEvents.TryGetValue(pair.Key, out var uiHandlers) ||
+                !uiHandlers.TryGetValue(pair.Value, out var handlers))
+            {
+                return;
+            }
+
+            using ListComponent<ETTask> list = ListComponent<ETTask>.Create();
+
+            foreach (IUIEvent ui in handlers)
+            {
+                if (ui is not IUIEventHandler handler)
+                {
+                    Log.Error($""event error: {ui.EventArgsType.FullName}"");
+                    continue;
+                }
+
+                Entity entity = uiComponent.GetComponent(pair.Key);
+                object args = Activator.CreateInstance(pair.Value);
+                list.Add(handler.Handle(entity, sender, args));
+            }
+
+            try
+            {
+                await ETTaskHelper.WaitAll(list);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
     }
 }"
             },
