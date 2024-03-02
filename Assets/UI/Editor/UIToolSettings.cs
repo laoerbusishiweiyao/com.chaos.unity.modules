@@ -455,6 +455,7 @@ namespace UnityEditor
 
             GameObject window = new(name, typeof(RectTransform), typeof(UIWindowEditorSettings));
             window.GetComponent<RectTransform>().SetFullScreen();
+            window.AddComponent(System.Type.GetType("UnityEngine.DataSource"));
 
             GameObject background = new("BackgroundTrigger", typeof(RectTransform), typeof(UITrigger));
             background.transform.SetParent(window.transform);

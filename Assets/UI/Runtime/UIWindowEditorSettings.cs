@@ -113,6 +113,7 @@ namespace UnityEngine
             widget.transform.SetParent(locator.transform);
             widget.GetComponent<RectTransform>().SetFullScreen();
             widget.name = Path.GetFileNameWithoutExtension(path);
+            widget.AddComponent(System.Type.GetType("UnityEngine.DataSource"));
 
             GameObject background = new("BackgroundTrigger", typeof(RectTransform), typeof(UITrigger));
             background.transform.SetParent(widget.transform);
@@ -186,6 +187,7 @@ namespace UnityEngine
             widget.transform.SetParent(locator.transform);
             widget.GetComponent<RectTransform>().SetFullScreen();
             widget.name = Path.GetFileNameWithoutExtension(path);
+            widget.AddComponent(System.Type.GetType("UnityEngine.DataSource"));
 
             UIWidgetEditorSettings options = widget.GetComponent<UIWidgetEditorSettings>();
             options.WidgetName = this.InputName;
