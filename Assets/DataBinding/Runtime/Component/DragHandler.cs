@@ -12,9 +12,22 @@ namespace UnityEngine.UI
         [LabelText("拖拽结束自动复位")]
         public bool ResetOnEndDrag;
 
-        [FormerlySerializedAs("PassOnEndDrag")]
         [LabelText("拖拽结束透传Drop")]
         public bool PassDrop;
+
+        [LabelText("开始拖拽时改变父节点")]
+        public bool ChangeParentOnBegin;
+
+        [ShowIf(nameof(ChangeParentOnBegin))]
+        [LabelText("开始拖拽时目标父节点")]
+        public RectTransform ParentOnBegin;
+
+        [LabelText("结束拖拽时复位父节点")]
+        public bool ResetParentOnEnd;
+
+        [ShowIf(nameof(ResetParentOnEnd))]
+        [LabelText("初始父节点")]
+        public RectTransform InitialParent;
 
         private RectTransform rectTransform;
         private Vector3 beginDragPosition;
@@ -25,6 +38,10 @@ namespace UnityEngine.UI
         {
             base.Awake();
             this.rectTransform = this.GetComponent<RectTransform>();
+            if (this.ResetOnEndDrag)
+            {
+                this.InitialParent = this.rectTransform.parent as RectTransform;
+            }
         }
 
         public void OnInitializePotentialDrag(PointerEventData eventData)
@@ -36,6 +53,11 @@ namespace UnityEngine.UI
             this.beginDragPosition = this.rectTransform.position;
             RectTransformUtility.ScreenPointToWorldPointInRectangle(this.rectTransform, eventData.position,
                 eventData.pressEventCamera, out this.beginWorldPoint);
+
+            if (this.ChangeParentOnBegin && this.ParentOnBegin)
+            {
+                this.rectTransform.SetParent(this.ParentOnBegin);
+            }
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -49,14 +71,19 @@ namespace UnityEngine.UI
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (this.PassDrop)
+            if (this.ResetOnEndDrag && this.InitialParent)
             {
-                this.PassEvent(eventData, ExecuteEvents.dropHandler);
+                this.rectTransform.SetParent(this.InitialParent);
             }
 
             if (this.ResetOnEndDrag)
             {
                 this.rectTransform.position = this.beginDragPosition;
+            }
+
+            if (this.PassDrop)
+            {
+                this.PassEvent(eventData, ExecuteEvents.dropHandler);
             }
         }
 
@@ -70,7 +97,6 @@ namespace UnityEngine.UI
             {
                 if (current != result.gameObject)
                 {
-                    eventData.pointerPressRaycast = result;
                     ExecuteEvents.Execute(result.gameObject, eventData, function);
                 }
             }

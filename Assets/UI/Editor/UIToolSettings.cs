@@ -301,7 +301,7 @@ namespace UnityEditor
                         .Replace("Source.prefab", $"Widget{key}.prefab");
                     GameObject gameObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                     foreach (EventBinderBehaviour behaviour in
-                             gameObject.GetComponentsInChildren<EventBinderBehaviour>())
+                             gameObject.GetComponentsInChildren<EventBinderBehaviour>(true))
                     {
                         if (eventNames.Contains(behaviour.EventName))
                         {
@@ -309,7 +309,7 @@ namespace UnityEditor
                         }
 
                         eventNames.Add(behaviour.EventName);
-                        
+
                         builder.AppendLine(
                             $"\t\t\t{{ nameof({behaviour.EventName}), new KeyValuePair<Type, Type>(typeof(UI{windowSetting.WindowName}WindowComponent), typeof({behaviour.EventName})) }},");
                     }
@@ -321,7 +321,7 @@ namespace UnityEditor
                         .Replace("Source.prefab", $"Popup{key}.prefab");
                     GameObject gameObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                     foreach (EventBinderBehaviour behaviour in
-                             gameObject.GetComponentsInChildren<EventBinderBehaviour>())
+                             gameObject.GetComponentsInChildren<EventBinderBehaviour>(true))
                     {
                         if (eventNames.Contains(behaviour.EventName))
                         {
@@ -329,13 +329,13 @@ namespace UnityEditor
                         }
 
                         eventNames.Add(behaviour.EventName);
-                        
+
                         builder.AppendLine(
                             $"\t\t\t{{ nameof({behaviour.EventName}), new KeyValuePair<Type, Type>(typeof(UI{windowSetting.WindowName}WindowComponent), typeof({behaviour.EventName})) }},");
                     }
                 }
             }
-            
+
             CodeSnippetSettings options = CodeSnippetSettings.Load();
             options.Build("CodeSnippet/UIEventSystem", new Dictionary<string, string>()
                 {
