@@ -48,12 +48,14 @@ namespace UnityEngine
             if (this.dataSource is null || this.dataSource.DataContext is null || this.Target is null)
             {
                 this.Target.enabled = true;
+                this.Target.CrossFadeAlpha(0f, 0f, true);
                 return;
             }
 
             if (this.binders.Count == 0)
             {
                 this.Target.enabled = true;
+                this.Target.CrossFadeAlpha(0f, 0f, true);
                 return;
             }
 
