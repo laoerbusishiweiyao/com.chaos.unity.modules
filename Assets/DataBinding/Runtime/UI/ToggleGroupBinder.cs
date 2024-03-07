@@ -24,7 +24,7 @@ namespace UnityEngine
         [ReadOnly]
         public ToggleGroup Target;
 
-        private bool isChangingIndex;
+        private int value;
 
         public override void Refresh()
         {
@@ -40,11 +40,6 @@ namespace UnityEngine
                 return;
             }
 
-            if (this.isChangingIndex)
-            {
-                return;
-            }
-
             this.Clear();
             this.AddToggles(this.GetOptions());
 
@@ -55,6 +50,11 @@ namespace UnityEngine
             }
 
             int index = Math.Clamp(GetIndex(), 0, toggles.Length - 1);
+            if (this.value == index)
+            {
+                return;
+            }
+
             toggles[index].isOn = true;
         }
 
@@ -75,13 +75,17 @@ namespace UnityEngine
         {
             var toggles = new List<Toggle>(this.GetComponentsInChildren<Toggle>());
             var index = toggles.IndexOf(this.Target.GetFirstActiveToggle());
+            if (this.value == index)
+            {
+                return;
+            }
+
             foreach (DataBinder binder in this.binders.Values)
             {
                 if (binder.DataType == typeof(int))
                 {
-                    this.isChangingIndex = true;
-                    this.dataSource.DataContext.SetValue<int>(binder.Source, index);
-                    this.isChangingIndex = false;
+                    this.value = index;
+                    this.dataSource.DataContext.SetValue(binder.Source, index);
                 }
             }
         }
@@ -110,7 +114,22 @@ namespace UnityEngine
             foreach (Toggle toggle in toggles)
             {
                 this.Target.UnregisterToggle(toggle);
-                DestroyImmediate(toggle.gameObject);
+            }
+
+            if (Application.isPlaying)
+            {
+                var length = this.transform.childCount;
+                for (int i = 1; i < length; i++)
+                {
+                    DestroyImmediate(this.transform.GetChild(1).gameObject);
+                }
+            }
+            else
+            {
+                foreach (Toggle toggle in toggles)
+                {
+                    DestroyImmediate(toggle.gameObject);
+                }
             }
         }
 
@@ -131,6 +150,15 @@ namespace UnityEngine
                 this.Target.RegisterToggle(toggle);
                 toggleGameObject.GetComponentInChildren<TextMeshProUGUI>().text = option;
             }
+
+            var toggles = new List<Toggle>(this.GetComponentsInChildren<Toggle>());
+            if (toggles.Count < 1)
+            {
+                return;
+            }
+
+            this.value = Math.Clamp(this.value, 0, toggles.Count - 1);
+            toggles[this.value].isOn = true;
         }
 
         private void OnValueChanged(bool value)
