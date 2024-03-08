@@ -20,8 +20,8 @@ namespace UnityEditor
 
         [HideInInspector]
         public string Source;
-
-        [Button("生成", ButtonSizes.Large)]
+        
+        [Button("生成", ButtonSizes.Gigantic)]
         [GUIColor(0.4f, 0.8f, 1)]
         public void Build()
         {

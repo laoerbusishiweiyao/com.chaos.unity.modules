@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -127,6 +128,7 @@ namespace UnityEngine
             {
                 transform.gameObject.layer = layer;
             }
+
             widget.layer = layer;
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(widget, path);
@@ -197,6 +199,7 @@ namespace UnityEngine
             {
                 transform.gameObject.layer = layer;
             }
+
             widget.layer = layer;
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(widget, path);
@@ -207,6 +210,40 @@ namespace UnityEngine
             this.AllWidget[this.InputName] = locator.GetComponent<RectTransform>();
 
             this.InputName = string.Empty;
+        }
+
+        [Button("清理", ButtonSizes.Large)]
+        [GUIColor(0.4f, 0.8f, 1)]
+        public void Clean()
+        {
+            var stage = PrefabStageUtility.GetCurrentPrefabStage();
+            if (stage is not null)
+            {
+                Debug.LogError("请先退出预制体编辑模式");
+                return;
+            }
+            
+            var defaultLoadedWidgets = this.DefaultLoadedWidgets;
+            this.DefaultLoadedWidgets.Clear();
+            foreach (RectTransform widget in defaultLoadedWidgets)
+            {
+                if (widget is null)
+                {
+                    continue;
+                }
+
+                this.DefaultLoadedWidgets.Add(widget);
+            }
+
+            foreach (string key in this.AllWidget.Where(pair => pair.Value is null).Select(pair => pair.Key).ToArray())
+            {
+                this.AllWidget.Remove(key);
+            }
+
+            foreach (string key in this.AllPopup.Where(pair => pair.Value is null).Select(pair => pair.Key).ToArray())
+            {
+                this.AllPopup.Remove(key);
+            }
         }
 
         #endregion
