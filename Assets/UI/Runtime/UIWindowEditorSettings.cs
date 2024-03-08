@@ -222,18 +222,8 @@ namespace UnityEngine
                 Debug.LogError("请先退出预制体编辑模式");
                 return;
             }
-            
-            var defaultLoadedWidgets = this.DefaultLoadedWidgets;
-            this.DefaultLoadedWidgets.Clear();
-            foreach (RectTransform widget in defaultLoadedWidgets)
-            {
-                if (widget is null)
-                {
-                    continue;
-                }
 
-                this.DefaultLoadedWidgets.Add(widget);
-            }
+            this.DefaultLoadedWidgets.RemoveAll(widget => !widget);
 
             foreach (string key in this.AllWidget.Where(pair => pair.Value is null).Select(pair => pair.Key).ToArray())
             {
@@ -244,6 +234,8 @@ namespace UnityEngine
             {
                 this.AllPopup.Remove(key);
             }
+
+            EditorUtility.SetDirty(this);
         }
 
         #endregion
