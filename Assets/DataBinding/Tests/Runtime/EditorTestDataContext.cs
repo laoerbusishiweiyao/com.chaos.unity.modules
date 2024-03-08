@@ -239,6 +239,22 @@ namespace UnityEngine
         {
             this.OnDataContextChanged(nameof(this.Age));
         }
+        
+        [SerializeField]
+        [OnValueChanged(nameof(OnLongValueChanged))]
+        [Delayed]
+        private long longValue;
+
+        public long LongValue
+        {
+            get => this.longValue;
+            set { this.SetField(ref this.longValue, value); }
+        }
+
+        private void OnLongValueChanged()
+        {
+            this.OnDataContextChanged(nameof(this.LongValue));
+        }
 
         [SerializeField]
         [OnValueChanged(nameof(OnAddressChanged))]
