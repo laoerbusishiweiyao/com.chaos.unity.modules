@@ -1,3 +1,5 @@
+using System;
+
 namespace UnityEngine.UI
 {
     [ExecuteAlways]
@@ -19,6 +21,11 @@ namespace UnityEngine.UI
             this.Refresh();
         }
 
+        private void OnEnable()
+        {
+            this.Refresh();
+        }
+
         public void Refresh()
         {
             if (this.RowCount < 1 || this.ColumnCount < 1)
@@ -27,10 +34,13 @@ namespace UnityEngine.UI
             }
 
             var size = this.rectTransform.rect.size - Vector2.one;
-            this.target.cellSize = new(size.x / this.ColumnCount, size.y / this.RowCount);
+            var spaceX = this.target.spacing.x * (this.ColumnCount - 1) + this.target.padding.horizontal;
+            var spaceY = this.target.spacing.y * (this.RowCount - 1) + this.target.padding.vertical;
+            this.target.cellSize = new((size.x - spaceX) / this.ColumnCount, (size.y - spaceY) / this.RowCount);
         }
 
 #if UNITY_EDITOR
+
         private void OnValidate()
         {
             this.rectTransform = this.GetComponent<RectTransform>();

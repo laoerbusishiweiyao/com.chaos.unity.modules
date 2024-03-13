@@ -10,6 +10,7 @@ namespace UnityEngine
         [PropertySpace]
         [OdinSerialize]
         [LabelText("事件参数")]
+        [PropertyOrder(98)]
         [DictionaryDrawerSettings(KeyLabel = "类型", ValueLabel = "名称", IsReadOnly = false,
             DisplayMode = DictionaryDisplayOptions.OneLine)]
         protected Dictionary<string, string> parameters = new();
