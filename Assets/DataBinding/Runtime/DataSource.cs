@@ -110,6 +110,12 @@ namespace UnityEngine
 
                 foreach (DataBinderBehaviour behaviour in behaviours)
                 {
+#if UNITY_EDITOR
+                    if (!behaviour)
+                    {
+                        continue;
+                    }
+#endif
                     behaviour.Initialize();
                     behaviour.Unbind();
                     behaviour.Bind();

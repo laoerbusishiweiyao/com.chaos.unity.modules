@@ -192,6 +192,24 @@ namespace UnityEngine
     public sealed class EditorTestDataContext : DataContext
     {
         [SerializeField]
+        [OnValueChanged(nameof(OnFloatValueChanged))]
+        [Delayed]
+        private float floatValue;
+
+        public float FloatValue
+        {
+            get => this.floatValue;
+            set { this.SetField(ref this.floatValue, value); }
+        }
+
+        private void OnFloatValueChanged()
+        {
+            this.OnDataContextChanged(nameof(this.FloatValue));
+        }
+
+
+        
+        [SerializeField]
         [OnValueChanged(nameof(OnAnchoredPositionChanged))]
         [Delayed]
         private List<float> anchoredPosition = new();
